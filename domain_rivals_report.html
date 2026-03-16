@@ -393,15 +393,15 @@ footer{border-top:1px solid var(--border);padding:14px 20px;display:flex;justify
     <!-- バブルチャート -->
     <div class="chart-card">
       <div class="cc-title">検索ボリューム × 順位 バブルチャート（ihc）</div>
-      <div class="cc-desc">バブルサイズ＝月間検索数。ゾーンで優先度が一目でわかる。※検索数600件以上・順位20位以下ははずれ値として下部に別掲。</div>
+      <div class="cc-desc">バブルサイズ＝月間検索数。グラフは1〜10位のKWを表示。11位以下・検索数600件以上ははずれ値として下部に別掲。</div>
       <div style="display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:11px;height:11px;border-radius:2px;background:rgba(41,146,77,0.1);border:1px solid rgba(41,146,77,.35)"></div><span style="color:var(--win);font-weight:600">維持ゾーン</span><span style="color:var(--text-muted)">（1〜10位×高需要）</span></div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:11px;height:11px;border-radius:2px;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,.3)"></div><span style="color:var(--lose);font-weight:600">優先対策ゾーン</span><span style="color:var(--text-muted)">（11位以下×高需要）</span></div>
+        
         <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:11px;height:11px;border-radius:2px;background:rgba(228,232,239,0.7);border:1px solid rgba(200,210,220,.6)"></div><span style="color:var(--text-muted);font-weight:600">低需要ゾーン</span><span style="color:var(--text-muted)">（検索数300未満）</span></div>
       </div>
       <div class="canvas-wrap" style="height:400px"><canvas id="chart_bubble"></canvas></div>
       <div style="margin-top:14px;border-top:1px dashed var(--border2);padding-top:12px;">
-        <div style="font-size:.7rem;font-weight:600;color:var(--text-muted);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;">⚠️ はずれ値（検索数600件以上 または 順位20位以下）— グラフ外に別掲</div>
+        <div style="font-size:.7rem;font-weight:600;color:var(--text-muted);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;">⚠️ はずれ値（検索数600件以上 または 順位11位以下）— グラフ外に別掲</div>
         <div class="outlier-grid" id="outlier_cards"></div>
       </div>
     </div>
@@ -580,15 +580,15 @@ renderRankTable();
 
 /* BUBBLE CHART */
 (function(){
-  var OUTLIERS =KW_DATA.filter(function(d){return d.vol>=600||d.ihc>=20;});
-  var PLOT_DATA=KW_DATA.filter(function(d){return d.vol<600&&d.ihc<20;});
+  var OUTLIERS =KW_DATA.filter(function(d){return d.vol>=600||d.ihc>10;});
+  var PLOT_DATA=KW_DATA.filter(function(d){return d.vol<600&&d.ihc<=10;});
 
   /* outlier cards */
   var cardWrap=document.getElementById("outlier_cards");
   OUTLIERS.forEach(function(d){
     var reasons=[];
     if(d.vol>=600)reasons.push("検索数600+");
-    if(d.ihc>=20)reasons.push("順位20位以下");
+    if(d.ihc>10)reasons.push("順位11位以下");
     var isG=d.ihc<=10;
     var bgC =isG?"var(--win-bg)" :"var(--lose-bg)";
     var bdC =isG?"#B6E4C5"       :"#F4B8B2";
@@ -613,14 +613,12 @@ renderRankTable();
   /* zone plugin */
   var zonePlugin={id:"zonePlugin",beforeDraw:function(chart){
     var c2=chart.ctx,xA=chart.scales.x,yA=chart.scales.y;
-    var x0=xA.getPixelForValue(0),x10=xA.getPixelForValue(10),x20=xA.getPixelForValue(20);
+    var x0=xA.getPixelForValue(0),x10=xA.getPixelForValue(10),x11=xA.getPixelForValue(11);
     var y300=yA.getPixelForValue(300),yTop=yA.getPixelForValue(440),yBot=yA.getPixelForValue(0);
     c2.save();c2.beginPath();c2.rect(xA.left,yA.top,xA.width,yA.height);c2.clip();
-    c2.fillStyle="rgba(41,146,77,0.07)";c2.fillRect(x0,yTop,x10-x0,y300-yTop);
-    c2.fillStyle="rgba(192,57,43,0.06)";c2.fillRect(x10,yTop,x20-x10,y300-yTop);
-    c2.fillStyle="rgba(228,232,239,0.45)";c2.fillRect(x0,y300,x20-x0,yBot-y300);
+    c2.fillStyle="rgba(41,146,77,0.07)";c2.fillRect(x0,yTop,x11-x0,y300-yTop);
+    c2.fillStyle="rgba(228,232,239,0.45)";c2.fillRect(x0,y300,x11-x0,yBot-y300);
     c2.strokeStyle="rgba(100,120,160,0.15)";c2.lineWidth=1;c2.setLineDash([4,4]);
-    c2.beginPath();c2.moveTo(x10,yA.top);c2.lineTo(x10,yA.bottom);c2.stroke();
     c2.beginPath();c2.moveTo(xA.left,y300);c2.lineTo(xA.right,y300);c2.stroke();
     c2.restore();
   }};
@@ -670,7 +668,7 @@ renderRankTable();
       layout:{padding:{left:10,right:20,top:28,bottom:8}},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var d=c.raw;var z=d.y>=300&&d.x<=10?"維持ゾーン":d.y>=300&&d.x>10?"優先対策ゾーン":"低需要ゾーン";return[" "+d._kw," 順位："+d.x+"位　検索数："+d.y.toLocaleString()+"件"," ゾーン："+z];}}}},
       scales:{
-        x:{min:0,max:20,grid:grd(),title:{display:true,text:"現在の検索順位（左ほど上位）",color:C.ax},ticks:{stepSize:2,padding:6,callback:function(v){return v+"位";}}},
+        x:{min:0,max:10,grid:grd(),title:{display:true,text:"現在の検索順位（1〜10位）",color:C.ax},ticks:{stepSize:1,padding:6,callback:function(v){return v+"位";}}},
         y:{min:0,max:440,grid:grd(),title:{display:true,text:"月間検索数（件）",color:C.ax},ticks:{stepSize:50,padding:8,callback:function(v){return v;}}}
       }
     }
