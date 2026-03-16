@@ -7,322 +7,283 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root {
-  --ihc:         #5B9BD5;
-  --ihc-fill:    rgba(91,155,213,0.15);
-  --creage:      #70C48A;
-  --creage-fill: rgba(112,196,138,0.15);
-  --mymc:        #F4A86A;
-  --mymc-fill:   rgba(244,168,106,0.15);
-  --accent:      #4A7FCB;
-  --bg:          #F7F8FA;
-  --surface:     #FFFFFF;
-  --border:      #E4E8EF;
-  --border2:     #D0D8E4;
-  --text:        #2C3550;
-  --text-sub:    #6B7899;
-  --text-muted:  #9AA3BB;
-  --win-bg:      #EAF7EE;
-  --win:         #29924D;
-  --lose-bg:     #FDECEA;
-  --lose:        #C0392B;
-  --tie-bg:      #F0F2F7;
-  --tie:         #6B7899;
+:root{
+  --ihc:#5B9BD5;--ihc-fill:rgba(91,155,213,0.15);
+  --creage:#70C48A;--creage-fill:rgba(112,196,138,0.15);
+  --mymc:#F4A86A;--mymc-fill:rgba(244,168,106,0.15);
+  --accent:#4A7FCB;--bg:#F7F8FA;--surface:#fff;
+  --border:#E4E8EF;--border2:#D0D8E4;
+  --text:#2C3550;--text-sub:#6B7899;--text-muted:#9AA3BB;
+  --win-bg:#EAF7EE;--win:#29924D;
+  --lose-bg:#FDECEA;--lose:#C0392B;
+  --tie-bg:#F0F2F7;--tie:#6B7899;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 13px;
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:14px;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:.875rem;line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* ── TOPBAR ── */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:50px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(44,53,80,.07);position:sticky;top:0;z-index:100;overflow-x:auto;}
+.topbar-logo{font-weight:700;font-size:.9rem;color:var(--accent);white-space:nowrap;}
+.topbar-sep{width:1px;height:20px;background:var(--border2);flex-shrink:0;}
+.topbar-lbl{font-size:.7rem;color:var(--text-muted);white-space:nowrap;flex-shrink:0;}
+.topbar-url{font-size:.75rem;font-weight:500;color:var(--text);background:var(--bg);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;white-space:nowrap;flex-shrink:0;}
+.topbar-date{margin-left:auto;font-size:.7rem;color:var(--text-muted);white-space:nowrap;padding-left:10px;}
+
+/* ── LEGEND BAR ── */
+.legend-bar{background:#fff;border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.legend-lbl{font-size:.7rem;color:var(--text-muted);}
+.legend-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:500;border:1px solid transparent;}
+.chip-i{background:#EAF2FB;color:#2B78C8;border-color:#C2D9F3;}
+.chip-c{background:#EBF8EF;color:#2A8C50;border-color:#B6E4C5;}
+.chip-m{background:#FEF3E8;color:#B96D1B;border-color:#F8D9B8;}
+.ldot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ── PAGE ── */
+.page{max-width:1200px;margin:0 auto;padding:24px 20px 60px;}
+
+/* ── PAGE TITLE ── */
+.page-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.page-title{font-size:1.4rem;font-weight:700;margin-bottom:2px;line-height:1.3;}
+.page-title em{color:var(--ihc);font-style:normal;}
+.page-sub{font-size:.75rem;color:var(--text-sub);margin-bottom:20px;}
+
+/* ── EXEC BANNER ── */
+.exec-banner{background:#fff;border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:10px;padding:22px 20px 20px;margin-bottom:24px;}
+.exec-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.exec-headline{font-size:1.05rem;font-weight:700;line-height:1.5;color:var(--text);margin-bottom:8px;}
+.exec-headline em{color:var(--lose);font-style:normal;}
+.exec-lead{font-size:.8rem;color:var(--text-sub);line-height:1.75;margin-bottom:16px;}
+.exec-lead strong{color:var(--text);}
+.exec-metrics{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.exec-metric{padding:12px 14px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.exec-metric:nth-child(3n){border-right:none;}
+.exec-metric:nth-last-child(-n+3){border-bottom:none;}
+.exec-metric-label{font-size:.65rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+.exec-metric-val{font-size:1.3rem;font-weight:700;line-height:1;margin-bottom:2px;}
+.exec-metric-val.vdanger{color:var(--lose);}
+.exec-metric-val.vwarn{color:#D97706;}
+.exec-metric-val.vgood{color:var(--win);}
+.exec-metric-sub{font-size:.7rem;color:var(--text-muted);}
+.exec-verdict{background:#EAF2FB;border:1px solid #C2D9F3;border-left:4px solid var(--accent);border-radius:8px;padding:11px 14px;font-size:.8rem;color:var(--text-sub);line-height:1.75;}
+.exec-verdict strong{color:var(--text);}
+
+/* ── NEXT ACTIONS ── */
+.actions-section{margin-bottom:24px;}
+.actions-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.actions-title{font-size:.95rem;font-weight:700;}
+.actions-badge{font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:4px;padding:3px 8px;}
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.action-card{background:#fff;border:1px solid var(--border);border-top:3px solid transparent;border-radius:10px;padding:16px 16px 14px;transition:box-shadow .15s;}
+.action-card:hover{box-shadow:0 4px 14px rgba(44,53,80,.09);}
+.ac-p1{border-top-color:#E05252;}.ac-p2{border-top-color:#F4A836;}.ac-p3{border-top-color:var(--ihc);}
+.action-priority{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-bottom:8px;}
+.ac-p1 .action-priority{background:#FDECEA;color:#C0392B;}
+.ac-p2 .action-priority{background:#FEF3E3;color:#B96D1B;}
+.ac-p3 .action-priority{background:#EAF2FB;color:#2B78C8;}
+.action-title{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.45;}
+.action-body{font-size:.75rem;color:var(--text-sub);line-height:1.65;margin-bottom:10px;}
+.action-body strong{color:var(--text);}
+.action-effect{display:flex;gap:6px;align-items:flex-start;background:var(--bg);border-radius:6px;padding:8px 10px;font-size:.7rem;}
+.action-effect-icon{flex-shrink:0;margin-top:1px;}
+.action-effect-text{color:var(--text-sub);line-height:1.5;}
+.action-effect-text strong{color:var(--text);}
+.action-timeline{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:.7rem;color:var(--text-muted);}
+.tl-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.ac-p1 .tl-dot{background:#E05252;}.ac-p2 .tl-dot{background:#F4A836;}.ac-p3 .tl-dot{background:var(--ihc);}
+
+/* ── KPI ── */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.kpi-card{background:#fff;border:1px solid var(--border);border-top:3px solid transparent;border-radius:10px;padding:14px 16px;}
+.kpi-card.ki{border-top-color:var(--ihc);}.kpi-card.kc{border-top-color:var(--creage);}.kpi-card.km{border-top-color:var(--mymc);}
+.kpi-tag{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;font-weight:600;margin-bottom:4px;padding:2px 8px;border-radius:10px;}
+.ki .kpi-tag{background:#EAF2FB;color:#2B78C8;}.kc .kpi-tag{background:#EBF8EF;color:#2A8C50;}.km .kpi-tag{background:#FEF3E8;color:#B96D1B;}
+.kpi-name{font-size:.7rem;color:var(--text-sub);margin-bottom:10px;}
+.kpi-nums{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;}
+.kpi-val{font-size:1.3rem;font-weight:700;line-height:1;letter-spacing:-.5px;margin-bottom:2px;}
+.ki .kpi-val{color:var(--ihc);}.kc .kpi-val{color:var(--creage);}.km .kpi-val{color:var(--mymc);}
+.kpi-unit{font-size:.7rem;color:var(--text-muted);}
+.kpi-sep{width:1px;background:var(--border);align-self:stretch;}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:28px;}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border);}
+.sec-num{font-size:.65rem;font-weight:700;color:var(--accent);background:#EAF2FB;border:1px solid #C2D9F3;border-radius:4px;padding:2px 7px;letter-spacing:1px;white-space:nowrap;}
+.sec-title{font-size:.9rem;font-weight:700;}
+.sec-desc{font-size:.7rem;color:var(--text-sub);margin-top:1px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.cc-title{font-size:.8rem;font-weight:600;margin-bottom:2px;}
+.cc-desc{font-size:.7rem;color:var(--text-muted);margin-bottom:12px;}
+.canvas-wrap{position:relative;width:100%;}
+
+/* ── RANK TABLE ── */
+.rank-table{width:100%;border-collapse:collapse;font-size:.75rem;}
+.rank-table thead th{background:#F0F3F8;color:var(--text-sub);font-weight:600;font-size:.68rem;padding:8px 10px;border-bottom:2px solid var(--border2);text-align:left;white-space:nowrap;}
+.rank-table tbody td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.rank-table tbody tr:last-child td{border-bottom:none;}
+.rank-table tbody tr:hover td{background:#FAFBFD;}
+.kw-name{font-weight:500;}
+.bar-cell{padding:8px 10px 8px 0;}
+.bar-wrap{display:flex;align-items:center;gap:6px;}
+.bar-track{height:9px;border-radius:5px;flex:1;min-width:40px;max-width:160px;background:var(--border);overflow:hidden;}
+.bar-fill-ihc{height:100%;border-radius:5px;}
+.bar-fill-creage{height:100%;border-radius:5px;}
+.bar-num{font-size:.7rem;font-weight:600;font-variant-numeric:tabular-nums;min-width:24px;}
+.win-badge {font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:10px;background:var(--win-bg);color:var(--win);white-space:nowrap;}
+.lose-badge{font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:10px;background:var(--lose-bg);color:var(--lose);white-space:nowrap;}
+.tie-badge {font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:10px;background:var(--tie-bg);color:var(--tie);white-space:nowrap;}
+
+/* ── SCORECARD ── */
+.scorecard{display:grid;grid-template-columns:repeat(3,1fr);border-radius:8px;overflow:hidden;border:1px solid var(--border);margin:12px 0 0;}
+.sc-block{padding:12px 10px;text-align:center;border-right:1px solid var(--border);}
+.sc-block:last-child{border-right:none;}
+.sc-win{background:var(--win-bg);}.sc-tie{background:var(--tie-bg);}.sc-lose{background:var(--lose-bg);}
+.sc-val{font-size:2rem;font-weight:700;line-height:1;margin-bottom:3px;}
+.sc-win .sc-val{color:var(--win);}.sc-tie .sc-val{color:var(--tie);}.sc-lose .sc-val{color:var(--lose);}
+.sc-label{font-size:.75rem;font-weight:700;margin-bottom:2px;}
+.sc-win .sc-label{color:var(--win);}.sc-tie .sc-label{color:var(--tie);}.sc-lose .sc-label{color:var(--lose);}
+.sc-sub{font-size:.65rem;color:var(--text-muted);}
+.sc-progress{height:7px;border-radius:4px;background:var(--border);overflow:hidden;display:flex;margin-top:10px;}
+.sc-prog-win{background:var(--win);}.sc-prog-tie{background:#CBD5E1;}.sc-prog-lose{background:var(--lose);}
+
+/* ── OUTLIER CARDS ── */
+.outlier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;}
+.outlier-card{border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;}
+.outlier-card-head{font-size:.75rem;font-weight:700;color:var(--text);}
+.outlier-card-reason{font-size:.65rem;color:var(--text-muted);}
+.outlier-card-body{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;}
+.outlier-stat-val{font-size:1.15rem;font-weight:700;line-height:1;}
+.outlier-stat-lbl{font-size:.65rem;color:var(--text-muted);margin-top:2px;}
+.outlier-zone{margin-left:auto;font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap;}
+
+/* ── DETAIL TABLE ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table.dt{width:100%;border-collapse:collapse;font-size:.75rem;}
+.dt thead th{background:#F0F3F8;color:var(--text-sub);font-weight:600;font-size:.68rem;letter-spacing:.4px;padding:9px 12px;border-bottom:2px solid var(--border2);text-align:left;white-space:nowrap;}
+.dt tbody td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.dt tbody tr:last-child td{border-bottom:none;}
+.dt tbody tr:hover td{background:#FAFBFD;}
+.kw-text{font-weight:500;}
+.vol-num{font-weight:600;font-variant-numeric:tabular-nums;}
+.vbar-row{display:flex;align-items:center;gap:6px;}
+.vbar-bg{width:70px;height:4px;background:var(--border);border-radius:3px;flex-shrink:0;}
+.vbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ihc),#82B8E8);}
+.rp{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:20px;border-radius:5px;font-size:.7rem;font-weight:700;padding:0 5px;}
+.rp1    {background:#EAF2FB;color:#1A66C2;border:1px solid #C2D9F3;}
+.rp3    {background:#FEF8E4;color:#9A6A00;border:1px solid #F3DFA0;}
+.rp10   {background:#F0F2F7;color:#5A6380;border:1px solid #D4D9E6;}
+.rpover {background:#FDECEA;color:#C0392B;border:1px solid #F4B8B2;}
+.rpnone {color:var(--text-muted);font-size:.7rem;}
+.adv{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;font-size:.7rem;font-weight:600;}
+.adv-win{background:var(--win-bg);color:var(--win);}
+.adv-lose{background:var(--lose-bg);color:var(--lose);}
+.adv-tie{background:var(--tie-bg);color:var(--tie);}
+
+/* ── INSIGHTS ── */
+.ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.ins-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;gap:10px;}
+.ins-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.ins-badge{font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:4px;}
+.ib-good{background:var(--win-bg);color:var(--win);}
+.ib-warn{background:#FEF8E4;color:#9A6A00;}
+.ib-opp{background:#EAF2FB;color:#2B78C8;}
+.ins-text{font-size:.75rem;color:var(--text-sub);line-height:1.6;}
+.ins-text strong{color:var(--text);}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:14px 20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;background:#fff;font-size:.7rem;color:var(--text-muted);}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── SORTABLE HEADERS ── */
+.sort-th {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  position: relative;
+  padding-right: 22px !important;
+}
+.sort-th:hover { background: #E6EAF2; }
+.sort-th::after {
+  content: '⇅';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .65rem;
+  color: var(--text-muted);
+  opacity: .6;
+}
+.sort-th.asc::after  { content: '↑'; color: var(--accent); opacity: 1; }
+.sort-th.desc::after { content: '↓'; color: var(--accent); opacity: 1; }
+.sort-th.asc,
+.sort-th.desc { background: #EAF2FB; color: var(--accent); }
+
+/* ════════════════════════════
+   RESPONSIVE BREAKPOINTS
+════════════════════════════ */
+
+/* タブレット（〜900px） */
+@media(max-width:900px){
+  .topbar{gap:8px;padding:0 16px;}
+  .topbar-lbl,.topbar-sep{display:none;}
+  .topbar-date{font-size:.65rem;}
+  .legend-bar{padding:8px 16px;}
+  .page{padding:20px 16px 50px;}
+  .exec-metrics{grid-template-columns:repeat(3,1fr);}
+  .actions-grid{grid-template-columns:1fr 1fr;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .kpi-card.km{grid-column:1/-1;}
+  .g2{grid-template-columns:1fr 1fr;}
+  .ins-grid{grid-template-columns:1fr 1fr;}
+  .outlier-grid{grid-template-columns:1fr 1fr;}
 }
 
-/* TOP BAR */
-.topbar {
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-  padding: 0 36px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  box-shadow: 0 1px 3px rgba(44,53,80,0.07);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.topbar-logo { font-weight: 700; font-size: 14px; color: var(--accent); }
-.topbar-sep  { width: 1px; height: 20px; background: var(--border2); }
-.topbar-lbl  { font-size: 11px; color: var(--text-muted); }
-.topbar-url  {
-  font-size: 12px; font-weight: 500; color: var(--text);
-  background: var(--bg); border: 1px solid var(--border2);
-  border-radius: 5px; padding: 3px 10px;
-}
-.topbar-date { margin-left: auto; font-size: 11px; color: var(--text-muted); }
+/* スマートフォン（〜600px） */
+@media(max-width:600px){
+  html{font-size:13px;}
+  .topbar{height:46px;padding:0 14px;}
+  .topbar-url{font-size:.7rem;padding:2px 7px;}
+  .legend-bar{padding:7px 14px;}
+  .page{padding:16px 14px 44px;}
 
-/* LEGEND BAR */
-.legend-bar {
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-  padding: 9px 36px;
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-}
-.legend-lbl { font-size: 11px; color: var(--text-muted); }
-.legend-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 10px; border-radius: 20px;
-  font-size: 11px; font-weight: 500; border: 1px solid transparent;
-}
-.chip-i { background: #EAF2FB; color: #2B78C8; border-color: #C2D9F3; }
-.chip-c { background: #EBF8EF; color: #2A8C50; border-color: #B6E4C5; }
-.chip-m { background: #FEF3E8; color: #B96D1B; border-color: #F8D9B8; }
-.ldot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .page-title{font-size:1.2rem;}
+  .exec-banner{padding:18px 16px 16px;}
+  .exec-headline{font-size:.95rem;}
+  .exec-metrics{grid-template-columns:1fr 1fr;}
+  .exec-metric:nth-child(2n){border-right:none;}
+  .exec-metric:nth-child(3n){border-right:1px solid var(--border);}
+  .exec-metric:nth-last-child(-n+3){border-bottom:1px solid var(--border);}
+  .exec-metric:last-child{border-bottom:none;}
 
-/* PAGE */
-.page { max-width: 1200px; margin: 0 auto; padding: 30px 36px 60px; }
+  .actions-grid{grid-template-columns:1fr;}
+  .kpi-row{grid-template-columns:1fr;}
+  .kpi-card.km{grid-column:auto;}
 
-.page-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
-}
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
-.page-title em { color: var(--ihc); font-style: normal; }
-.page-sub { font-size: 12px; color: var(--text-sub); margin-bottom: 22px; }
+  .g2{grid-template-columns:1fr;}
+  .scorecard{grid-template-columns:1fr;}
+  .sc-block{border-right:none !important;border-bottom:1px solid var(--border);}
+  .sc-block:last-child{border-bottom:none;}
 
-/* EXECUTIVE SUMMARY — ライトテーマ統一 */
-.exec-banner {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-top: 4px solid var(--accent);
-  border-radius: 10px;
-  padding: 28px 30px 24px;
-  margin-bottom: 30px;
-}
-.exec-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
-}
-.exec-headline {
-  font-size: 18px; font-weight: 700; line-height: 1.5;
-  color: var(--text); margin-bottom: 8px;
-}
-.exec-headline em { color: var(--lose); font-style: normal; }
-.exec-lead {
-  font-size: 13px; color: var(--text-sub);
-  line-height: 1.75; max-width: 860px; margin-bottom: 20px;
-}
-.exec-lead strong { color: var(--text); }
-.exec-metrics {
-  display: flex;
-  background: var(--bg);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  margin-bottom: 18px;
-  overflow: hidden;
-}
-.exec-metric {
-  flex: 1; padding: 14px 18px;
-  border-right: 1px solid var(--border);
-}
-.exec-metric:last-child { border-right: none; }
-.exec-metric-label {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
-  text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
-}
-.exec-metric-val {
-  font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 3px;
-}
-.exec-metric-val.vdanger { color: var(--lose); }
-.exec-metric-val.vwarn   { color: #D97706; }
-.exec-metric-val.vgood   { color: var(--win); }
-.exec-metric-sub { font-size: 11px; color: var(--text-muted); }
-.exec-verdict {
-  background: #EAF2FB;
-  border: 1px solid #C2D9F3;
-  border-left: 4px solid var(--accent);
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 13px; color: var(--text-sub); line-height: 1.75;
-}
-.exec-verdict strong { color: var(--text); }
+  .outlier-grid{grid-template-columns:1fr;}
+  .ins-grid{grid-template-columns:1fr;}
 
-/* NEXT ACTIONS */
-.actions-section { margin-bottom: 30px; }
-.actions-header {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-}
-.actions-title { font-size: 16px; font-weight: 700; }
-.actions-badge {
-  font-size: 10px; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; color: #fff;
-  background: var(--accent); border-radius: 4px; padding: 3px 8px;
-}
-.actions-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-}
-.action-card {
-  background: #fff; border: 1px solid var(--border);
-  border-top: 3px solid transparent;
-  border-radius: 10px; padding: 18px 18px 16px;
-  transition: box-shadow 0.15s;
-}
-.action-card:hover { box-shadow: 0 4px 14px rgba(44,53,80,0.09); }
-.ac-p1 { border-top-color: #E05252; }
-.ac-p2 { border-top-color: #F4A836; }
-.ac-p3 { border-top-color: var(--ihc); }
-.action-priority {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
-  text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 9px;
-}
-.ac-p1 .action-priority { background: #FDECEA; color: #C0392B; }
-.ac-p2 .action-priority { background: #FEF3E3; color: #B96D1B; }
-.ac-p3 .action-priority { background: #EAF2FB; color: #2B78C8; }
-.action-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.45; }
-.action-body  { font-size: 12px; color: var(--text-sub); line-height: 1.65; margin-bottom: 12px; }
-.action-body strong { color: var(--text); }
-.action-effect {
-  display: flex; gap: 7px; align-items: flex-start;
-  background: var(--bg); border-radius: 6px; padding: 9px 11px; font-size: 11px;
-}
-.action-effect-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
-.action-effect-text { color: var(--text-sub); line-height: 1.5; }
-.action-effect-text strong { color: var(--text); }
-.action-timeline {
-  display: flex; align-items: center; gap: 5px;
-  margin-top: 9px; font-size: 11px; color: var(--text-muted);
-}
-.tl-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.ac-p1 .tl-dot { background: #E05252; }
-.ac-p2 .tl-dot { background: #F4A836; }
-.ac-p3 .tl-dot { background: var(--ihc); }
+  .rank-table thead th:last-child{display:none;}
+  .rank-table tbody td:last-child{display:none;}
+  .bar-track{max-width:100px;}
 
-/* KPI CARDS */
-.kpi-row {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px;
+  footer{flex-direction:column;gap:4px;}
 }
-.kpi-card {
-  background: #fff; border: 1px solid var(--border);
-  border-top: 3px solid transparent; border-radius: 10px; padding: 16px 18px;
-}
-.kpi-card.ki { border-top-color: var(--ihc); }
-.kpi-card.kc { border-top-color: var(--creage); }
-.kpi-card.km { border-top-color: var(--mymc); }
-.kpi-tag {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11px; font-weight: 600; margin-bottom: 4px;
-  padding: 2px 8px; border-radius: 10px;
-}
-.ki .kpi-tag { background: #EAF2FB; color: #2B78C8; }
-.kc .kpi-tag { background: #EBF8EF; color: #2A8C50; }
-.km .kpi-tag { background: #FEF3E8; color: #B96D1B; }
-.kpi-name { font-size: 11px; color: var(--text-sub); margin-bottom: 11px; }
-.kpi-nums { display: flex; gap: 16px; align-items: flex-end; }
-.kpi-val  { font-size: 22px; font-weight: 700; line-height: 1; letter-spacing: -0.5px; margin-bottom: 2px; }
-.ki .kpi-val { color: var(--ihc); }
-.kc .kpi-val { color: var(--creage); }
-.km .kpi-val { color: var(--mymc); }
-.kpi-unit { font-size: 11px; color: var(--text-muted); }
-.kpi-sep  { width: 1px; background: var(--border); align-self: stretch; }
 
-/* SECTIONS */
-.section { margin-bottom: 34px; }
-.sec-head {
-  display: flex; align-items: baseline; gap: 10px;
-  margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--border);
+/* 超小型（〜400px） */
+@media(max-width:400px){
+  .exec-metrics{grid-template-columns:1fr 1fr;}
+  .exec-metric-val{font-size:1.1rem;}
+  .kpi-val{font-size:1.1rem;}
 }
-.sec-num {
-  font-size: 10px; font-weight: 700; color: var(--accent);
-  background: #EAF2FB; border: 1px solid #C2D9F3;
-  border-radius: 4px; padding: 2px 7px; letter-spacing: 1px;
-}
-.sec-title { font-size: 15px; font-weight: 700; }
-.sec-desc  { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
-
-/* CHART GRID */
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.chart-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
-.cc-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-.cc-desc  { font-size: 11px; color: var(--text-muted); margin-bottom: 14px; }
-.canvas-wrap { position: relative; width: 100%; }
-
-/* SCORECARD */
-.scorecard { display: flex; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); margin: 14px 0 0; }
-.sc-block { flex: 1; padding: 14px 16px; text-align: center; border-right: 1px solid var(--border); }
-.sc-block:last-child { border-right: none; }
-.sc-win  { background: var(--win-bg); }
-.sc-tie  { background: var(--tie-bg); }
-.sc-lose { background: var(--lose-bg); }
-.sc-val  { font-size: 34px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
-.sc-win  .sc-val { color: var(--win); }
-.sc-tie  .sc-val { color: var(--tie); }
-.sc-lose .sc-val { color: var(--lose); }
-.sc-label{ font-size: 12px; font-weight: 700; margin-bottom: 2px; }
-.sc-win  .sc-label { color: var(--win); }
-.sc-tie  .sc-label { color: var(--tie); }
-.sc-lose .sc-label { color: var(--lose); }
-.sc-sub  { font-size: 11px; color: var(--text-muted); }
-.sc-progress { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; display: flex; margin-top: 12px; }
-.sc-prog-win  { background: var(--win); }
-.sc-prog-tie  { background: #CBD5E1; }
-.sc-prog-lose { background: var(--lose); }
-
-/* TABLE */
-.tbl-wrap { overflow-x: auto; }
-table.dt  { width: 100%; border-collapse: collapse; font-size: 12px; }
-.dt thead th {
-  background: #F0F3F8; color: var(--text-sub); font-weight: 600;
-  font-size: 11px; letter-spacing: .4px; padding: 10px 14px;
-  border-bottom: 2px solid var(--border2); text-align: left; white-space: nowrap;
-}
-.dt tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-.dt tbody tr:last-child td { border-bottom: none; }
-.dt tbody tr:hover td { background: #FAFBFD; }
-.kw-text { font-weight: 500; }
-.vol-num { font-weight: 600; font-variant-numeric: tabular-nums; }
-.vbar-row { display: flex; align-items: center; gap: 8px; }
-.vbar-bg  { width: 90px; height: 5px; background: var(--border); border-radius: 3px; flex-shrink: 0; }
-.vbar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--ihc), #82B8E8); }
-.rp { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 22px; border-radius: 5px; font-size: 12px; font-weight: 700; padding: 0 6px; }
-.rp1    { background: #EAF2FB; color: #1A66C2; border: 1px solid #C2D9F3; }
-.rp3    { background: #FEF8E4; color: #9A6A00; border: 1px solid #F3DFA0; }
-.rp10   { background: #F0F2F7; color: #5A6380; border: 1px solid #D4D9E6; }
-.rpover { background: #FDECEA; color: #C0392B; border: 1px solid #F4B8B2; }
-.rpnone { color: var(--text-muted); font-size: 11px; }
-.adv { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-.adv-win  { background: var(--win-bg);  color: var(--win);  }
-.adv-lose { background: var(--lose-bg); color: var(--lose); }
-.adv-tie  { background: var(--tie-bg);  color: var(--tie);  }
-
-/* INSIGHTS */
-.ins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.ins-card {
-  background: #fff; border: 1px solid var(--border); border-radius: 10px;
-  padding: 16px 16px; display: flex; gap: 10px;
-}
-.ins-icon  { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.ins-badge {
-  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-  padding: 2px 7px; border-radius: 3px; display: inline-block; margin-bottom: 5px;
-}
-.ib-good { background: var(--win-bg);  color: var(--win); }
-.ib-warn { background: #FEF8E4; color: #9A6A00; }
-.ib-opp  { background: #EAF2FB; color: #2B78C8; }
-.ins-text { font-size: 12px; color: var(--text-sub); line-height: 1.6; }
-.ins-text strong { color: var(--text); }
-
-/* FOOTER */
-footer {
-  border-top: 1px solid var(--border); padding: 14px 36px;
-  display: flex; justify-content: space-between;
-  background: #fff; font-size: 11px; color: var(--text-muted);
-}
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -336,7 +297,6 @@ footer {
   <span class="topbar-url">https://www.creage.or.jp/</span>
   <span class="topbar-date">分析日：2026年3月14日</span>
 </div>
-
 <div class="legend-bar">
   <span class="legend-lbl">表示サイト：</span>
   <span class="legend-chip chip-i"><span class="ldot" style="background:var(--ihc)"></span>www.ihc.or.jp（自社）</span>
@@ -345,7 +305,6 @@ footer {
 </div>
 
 <div class="page">
-
   <div class="page-eyebrow">Domain Rival Analysis · Executive Summary</div>
   <div class="page-title">ドメインライバル<em>競合分析</em></div>
   <div class="page-sub">女性のための健診センターイーク ｜ ihc.or.jp の SEO 競合ポジション分析レポート</div>
@@ -354,286 +313,127 @@ footer {
   <div class="exec-banner">
     <div class="exec-eyebrow">Executive Summary</div>
     <div class="exec-headline">直接競合に<em>流入数で4.5倍の差</em>をつけられている。しかし勝てる土台はすでに整っている。</div>
-    <div class="exec-lead">
-      ihc.or.jp は被リンク・ドメイン年齢・女性特化ブランドという3つの資産で競合優位を持ちながら、<strong>コンテンツ量の不足だけが原因で流入機会を失っている</strong>状態です。
-      直接競合 creage.or.jp との差はコンテンツ投資で埋められる「実行ギャップ」であり、戦略的資産の再構築は不要です。
-    </div>
+    <div class="exec-lead">ihc.or.jp は被リンク・ドメイン年齢・女性特化ブランドという3つの資産で競合優位を持ちながら、<strong>コンテンツ量の不足だけが原因で流入機会を失っている</strong>状態です。直接競合 creage.or.jp との差はコンテンツ投資で埋められる「実行ギャップ」であり、戦略的資産の再構築は不要です。</div>
     <div class="exec-metrics">
-      <div class="exec-metric">
-        <div class="exec-metric-label">自社 月間流入数</div>
-        <div class="exec-metric-val vdanger">21,300</div>
-        <div class="exec-metric-sub">競合比 −73,585 件</div>
-      </div>
-      <div class="exec-metric">
-        <div class="exec-metric-label">競合との流入倍率差</div>
-        <div class="exec-metric-val vwarn">×4.5</div>
-        <div class="exec-metric-sub">creage.or.jp 94,885 件</div>
-      </div>
-      <div class="exec-metric">
-        <div class="exec-metric-label">KWギャップ</div>
-        <div class="exec-metric-val vwarn">3,655</div>
-        <div class="exec-metric-sub">自社 2,922 vs 競合 6,577</div>
-      </div>
-      <div class="exec-metric">
-        <div class="exec-metric-label">女性特化KW 1位数</div>
-        <div class="exec-metric-val vgood">7 KW</div>
-        <div class="exec-metric-sub">婦人科検診・人間ドック女性 等</div>
-      </div>
-      <div class="exec-metric">
-        <div class="exec-metric-label">被リンク元ドメイン</div>
-        <div class="exec-metric-val vgood">176</div>
-        <div class="exec-metric-sub">競合比 圧倒的優位</div>
-      </div>
-      <div class="exec-metric">
-        <div class="exec-metric-label">ドメイン年齢</div>
-        <div class="exec-metric-val vgood">18年</div>
-        <div class="exec-metric-sub">SEO信頼資産として機能</div>
-      </div>
+      <div class="exec-metric"><div class="exec-metric-label">自社 月間流入数</div><div class="exec-metric-val vdanger">21,300</div><div class="exec-metric-sub">競合比 −73,585 件</div></div>
+      <div class="exec-metric"><div class="exec-metric-label">競合との流入倍率差</div><div class="exec-metric-val vwarn">×4.5</div><div class="exec-metric-sub">creage.or.jp 94,885 件</div></div>
+      <div class="exec-metric"><div class="exec-metric-label">KWギャップ</div><div class="exec-metric-val vwarn">3,655</div><div class="exec-metric-sub">自社 2,922 vs 競合 6,577</div></div>
+      <div class="exec-metric"><div class="exec-metric-label">女性特化KW 1位数</div><div class="exec-metric-val vgood">7 KW</div><div class="exec-metric-sub">婦人科検診・人間ドック女性 等</div></div>
+      <div class="exec-metric"><div class="exec-metric-label">被リンク元ドメイン</div><div class="exec-metric-val vgood">176</div><div class="exec-metric-sub">競合比 圧倒的優位</div></div>
+      <div class="exec-metric"><div class="exec-metric-label">ドメイン年齢</div><div class="exec-metric-val vgood">18年</div><div class="exec-metric-sub">SEO信頼資産として機能</div></div>
     </div>
-    <div class="exec-verdict">
-      <strong>結論：</strong>「コンテンツを書けば勝てる」状況にある。被リンク・ドメイン年齢・ブランド認知は競合を上回っており、月4本のコラム記事投資を6ヶ月継続するだけで、流入数を現状の<strong>2〜3倍（40,000〜60,000件）</strong>に引き上げる現実的な根拠がある。これはコストのかかる技術投資ではなく、<strong>コンテンツ担当者または外注1名分の予算</strong>で実現できる施策です。
-    </div>
+    <div class="exec-verdict"><strong>結論：</strong>「コンテンツを書けば勝てる」状況にある。月4本のコラム記事投資を6ヶ月継続するだけで、流入数を現状の<strong>2〜3倍（40,000〜60,000件）</strong>に引き上げる現実的な根拠がある。これは<strong>コンテンツ担当者または外注1名分の予算</strong>で実現できる施策です。</div>
   </div>
 
   <!-- NEXT ACTIONS -->
   <div class="actions-section">
-    <div class="actions-header">
-      <div class="actions-title">ネクストアクション</div>
-      <span class="actions-badge">Priority Actions</span>
-    </div>
+    <div class="actions-header"><div class="actions-title">ネクストアクション</div><span class="actions-badge">Priority Actions</span></div>
     <div class="actions-grid">
-      <div class="action-card ac-p1">
-        <div class="action-priority">🔴 最優先 · 即着手</div>
-        <div class="action-title">競合が独占するコラムKWへ集中投資</div>
-        <div class="action-body">「<strong>婦人科検診 痛い</strong>（月880件）」「<strong>子宮がん検診 痛い</strong>（月2,400件）」など creage が1位を取る高需要KWへ、女性医師監修付きコラムを月4本投入。既存FAQページを個別コラムへ切り出すだけで即着手可能。</div>
-        <div class="action-effect">
-          <span class="action-effect-icon">📈</span>
-          <div class="action-effect-text"><strong>6ヶ月で流入 +20,000〜30,000件</strong>。creage との差を半減できる。</div>
-        </div>
-        <div class="action-timeline"><span class="tl-dot"></span>今月〜翌月 ／ コンテンツ担当 1名</div>
-      </div>
-      <div class="action-card ac-p1">
-        <div class="action-priority">🔴 最優先 · 低工数</div>
-        <div class="action-title">トップページを競合水準（4,500字）へ拡充</div>
-        <div class="action-body">現在のトップページ文字数は<strong>1,751字</strong>。上位10位中央値は<strong>4,561字</strong>で約4割にとどまる。コース詳細・疾患解説・Q&Aを追加し3,500〜5,000字へ。画像alt属性（現在24%→100%）も同時実施。</div>
-        <div class="action-effect">
-          <span class="action-effect-icon">🎯</span>
-          <div class="action-effect-text">「人間ドック 東京」<strong>10位→3〜5位</strong>圏内へ。月500〜800件の直接流入増。</div>
-        </div>
-        <div class="action-timeline"><span class="tl-dot"></span>今月中 ／ Web担当 3〜5日</div>
-      </div>
-      <div class="action-card ac-p2">
-        <div class="action-priority">🟡 重要 · 中期施策</div>
-        <div class="action-title">医師監修クレジット全面導入（E-E-A-T対応）</div>
-        <div class="action-body">Google は医療コンテンツの信頼性指標として<strong>E-E-A-T</strong>を重視。現在の監修者表記は<strong>0%</strong>。全コラム・サービスページへ担当医師のプロフィール・監修クレジットを付与し、医療系KW全体の順位安定化を図る。</div>
-        <div class="action-effect">
-          <span class="action-effect-icon">🛡️</span>
-          <div class="action-effect-text">アルゴリズム更新への<strong>耐性強化</strong>。高単価医療KWでの<strong>順位安定・上昇</strong>。</div>
-        </div>
-        <div class="action-timeline"><span class="tl-dot"></span>1〜2ヶ月以内 ／ 医師確認+Web担当</div>
-      </div>
-      <div class="action-card ac-p2">
-        <div class="action-priority">🟡 重要 · 中期施策</div>
-        <div class="action-title">女性健康コラムでブルーオーシャンを先取り</div>
-        <div class="action-body">最大手 mymc.jp（月間<strong>207万件</strong>）は女性特化コンテンツに未参入。「<strong>更年期障害</strong>（月13.5万）」「<strong>甲状腺</strong>（月16.5万）」「<strong>エクオール</strong>（月9万）」等は creage も弱く、先行者利益を取れる状況。</div>
-        <div class="action-effect">
-          <span class="action-effect-icon">🌊</span>
-          <div class="action-effect-text">1年以内に<strong>月間 +50,000〜100,000件</strong>規模のポテンシャル。</div>
-        </div>
-        <div class="action-timeline"><span class="tl-dot"></span>2〜3ヶ月以内 ／ コンテンツ担当継続</div>
-      </div>
-      <div class="action-card ac-p3">
-        <div class="action-priority">🔵 推奨 · 権威性強化</div>
-        <div class="action-title">外部メディア掲載でドメインスコアを引き上げ</div>
-        <div class="action-body">現在のドメインスコアは<strong>36</strong>（目標値47+）。女性健康メディア・医療情報サイトへのプレスリリース配信と医療機関紹介サイト登録を通じて外部サイテーションを増やし、ドメイン権威を向上させる。</div>
-        <div class="action-effect">
-          <span class="action-effect-icon">🔗</span>
-          <div class="action-effect-text"><strong>同じコンテンツ投資で上位表示しやすい体質</strong>へ。競合追い越しを加速。</div>
-        </div>
-        <div class="action-timeline"><span class="tl-dot"></span>3ヶ月以内 ／ PR・マーケ部門</div>
-      </div>
-      <div class="action-card ac-p3">
-        <div class="action-priority">🔵 推奨 · ROI把握</div>
-        <div class="action-title">SEO流入→予約転換率のトラッキング整備</div>
-        <div class="action-body">オーガニック流入が予約・問い合わせにどれだけ転換しているかの<strong>計測基盤が不明確</strong>。GA4イベント設定・予約フォームの流入経路タグ付けを整備し、コンテンツ投資の<strong>ROIを金額で可視化</strong>する。</div>
-        <div class="action-effect">
-          <span class="action-effect-icon">📊</span>
-          <div class="action-effect-text"><strong>SEO投資対効果の数値化</strong>。次期予算申請・継続承認の根拠データとして機能。</div>
-        </div>
-        <div class="action-timeline"><span class="tl-dot"></span>1ヶ月以内 ／ エンジニア 2〜3日</div>
-      </div>
+      <div class="action-card ac-p1"><div class="action-priority">🔴 最優先 · 即着手</div><div class="action-title">競合が独占するコラムKWへ集中投資</div><div class="action-body">「<strong>婦人科検診 痛い</strong>（月880件）」「<strong>子宮がん検診 痛い</strong>（月2,400件）」など creage が1位を取る高需要KWへ、女性医師監修付きコラムを月4本投入。</div><div class="action-effect"><span class="action-effect-icon">📈</span><div class="action-effect-text"><strong>6ヶ月で流入 +20,000〜30,000件</strong>。creage との差を半減できる。</div></div><div class="action-timeline"><span class="tl-dot"></span>今月〜翌月 ／ コンテンツ担当 1名</div></div>
+      <div class="action-card ac-p1"><div class="action-priority">🔴 最優先 · 低工数</div><div class="action-title">トップページを競合水準（4,500字）へ拡充</div><div class="action-body">現在のトップページ文字数は<strong>1,751字</strong>。上位10位中央値は<strong>4,561字</strong>。コース詳細・疾患解説・Q&Aを追加し3,500〜5,000字へ。画像alt属性も同時実施。</div><div class="action-effect"><span class="action-effect-icon">🎯</span><div class="action-effect-text">「人間ドック 東京」<strong>10位→3〜5位</strong>圏内へ。月500〜800件の直接流入増。</div></div><div class="action-timeline"><span class="tl-dot"></span>今月中 ／ Web担当 3〜5日</div></div>
+      <div class="action-card ac-p2"><div class="action-priority">🟡 重要 · 中期施策</div><div class="action-title">医師監修クレジット全面導入（E-E-A-T対応）</div><div class="action-body">現在の監修者表記は<strong>0%</strong>。全コラム・サービスページへ担当医師の監修クレジットを付与し、医療系KW全体の順位安定化を図る。</div><div class="action-effect"><span class="action-effect-icon">🛡️</span><div class="action-effect-text">アルゴリズム更新への<strong>耐性強化</strong>。高単価医療KWでの<strong>順位安定・上昇</strong>。</div></div><div class="action-timeline"><span class="tl-dot"></span>1〜2ヶ月以内 ／ 医師確認+Web担当</div></div>
+      <div class="action-card ac-p2"><div class="action-priority">🟡 重要 · 中期施策</div><div class="action-title">女性健康コラムでブルーオーシャンを先取り</div><div class="action-body">「<strong>更年期障害</strong>（月13.5万）」「<strong>甲状腺</strong>（月16.5万）」「<strong>エクオール</strong>（月9万）」等は creage も弱く、先行者利益を取れる状況。</div><div class="action-effect"><span class="action-effect-icon">🌊</span><div class="action-effect-text">1年以内に<strong>月間 +50,000〜100,000件</strong>規模のポテンシャル。</div></div><div class="action-timeline"><span class="tl-dot"></span>2〜3ヶ月以内 ／ コンテンツ担当継続</div></div>
+      <div class="action-card ac-p3"><div class="action-priority">🔵 推奨 · 権威性強化</div><div class="action-title">外部メディア掲載でドメインスコアを引き上げ</div><div class="action-body">現在のドメインスコアは<strong>36</strong>（目標値47+）。女性健康メディアへのPR配信と医療機関紹介サイト登録でサイテーションを増やす。</div><div class="action-effect"><span class="action-effect-icon">🔗</span><div class="action-effect-text"><strong>同じコンテンツ投資で上位表示しやすい体質</strong>へ。競合追い越しを加速。</div></div><div class="action-timeline"><span class="tl-dot"></span>3ヶ月以内 ／ PR・マーケ部門</div></div>
+      <div class="action-card ac-p3"><div class="action-priority">🔵 推奨 · ROI把握</div><div class="action-title">SEO流入→予約転換率のトラッキング整備</div><div class="action-body">GA4イベント設定・予約フォームの流入経路タグ付けを整備し、コンテンツ投資の<strong>ROIを金額で可視化</strong>する。</div><div class="action-effect"><span class="action-effect-icon">📊</span><div class="action-effect-text"><strong>SEO投資対効果の数値化</strong>。次期予算申請の根拠データとして機能。</div></div><div class="action-timeline"><span class="tl-dot"></span>1ヶ月以内 ／ エンジニア 2〜3日</div></div>
     </div>
   </div>
 
-  <!-- KPI CARDS -->
+  <!-- KPI -->
   <div class="kpi-row">
-    <div class="kpi-card ki">
-      <div class="kpi-tag"><span class="ldot" style="background:var(--ihc)"></span>ihc.or.jp</div>
-      <div class="kpi-name">女性のための健診センターイーク</div>
-      <div class="kpi-nums">
-        <div><div class="kpi-val">21,300</div><div class="kpi-unit">月間流入数</div></div>
-        <div class="kpi-sep"></div>
-        <div><div class="kpi-val">2,922</div><div class="kpi-unit">ランクインKW数</div></div>
-      </div>
+    <div class="kpi-card ki"><div class="kpi-tag"><span class="ldot" style="background:var(--ihc)"></span>ihc.or.jp</div><div class="kpi-name">女性のための健診センターイーク</div><div class="kpi-nums"><div><div class="kpi-val">21,300</div><div class="kpi-unit">月間流入数</div></div><div class="kpi-sep"></div><div><div class="kpi-val">2,922</div><div class="kpi-unit">ランクインKW数</div></div></div></div>
+    <div class="kpi-card kc"><div class="kpi-tag"><span class="ldot" style="background:var(--creage)"></span>creage.or.jp</div><div class="kpi-name">クレアージュ（直接競合）</div><div class="kpi-nums"><div><div class="kpi-val">94,885</div><div class="kpi-unit">月間流入数</div></div><div class="kpi-sep"></div><div><div class="kpi-val">6,577</div><div class="kpi-unit">ランクインKW数</div></div></div></div>
+    <div class="kpi-card km"><div class="kpi-tag"><span class="ldot" style="background:var(--mymc)"></span>mymc.jp</div><div class="kpi-name">マイメディカルクリニック（最大手）</div><div class="kpi-nums"><div><div class="kpi-val">2.07M</div><div class="kpi-unit">月間流入数</div></div><div class="kpi-sep"></div><div><div class="kpi-val">215,598</div><div class="kpi-unit">ランクインKW数</div></div></div></div>
+  </div>
+
+  <!-- S1 -->
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">01</span><div><div class="sec-title">ドメイン全体比較</div><div class="sec-desc">3サイトの流入規模・キーワード数・効率を比較します</div></div></div>
+    <div class="g2">
+      <div class="chart-card"><div class="cc-title">月間オーガニック流入数の比較</div><div class="cc-desc">ihc と creage の差は4.5倍。mymc.jp との差は約97倍。</div><div class="canvas-wrap" style="height:240px"><canvas id="chart_traffic"></canvas></div></div>
+      <div class="chart-card"><div class="cc-title">ランクインキーワード数の比較</div><div class="cc-desc">ihc は creage の約44%。コンテンツ拡充で伸び代は大きい。</div><div class="canvas-wrap" style="height:240px"><canvas id="chart_kwcount"></canvas></div></div>
     </div>
-    <div class="kpi-card kc">
-      <div class="kpi-tag"><span class="ldot" style="background:var(--creage)"></span>creage.or.jp</div>
-      <div class="kpi-name">クレアージュ（直接競合）</div>
-      <div class="kpi-nums">
-        <div><div class="kpi-val">94,885</div><div class="kpi-unit">月間流入数</div></div>
-        <div class="kpi-sep"></div>
-        <div><div class="kpi-val">6,577</div><div class="kpi-unit">ランクインKW数</div></div>
-      </div>
-    </div>
-    <div class="kpi-card km">
-      <div class="kpi-tag"><span class="ldot" style="background:var(--mymc)"></span>mymc.jp</div>
-      <div class="kpi-name">マイメディカルクリニック（最大手）</div>
-      <div class="kpi-nums">
-        <div><div class="kpi-val">2.07M</div><div class="kpi-unit">月間流入数</div></div>
-        <div class="kpi-sep"></div>
-        <div><div class="kpi-val">215,598</div><div class="kpi-unit">ランクインKW数</div></div>
-      </div>
+    <div class="g2">
+      <div class="chart-card"><div class="cc-title">ihc vs creage ｜ 流入・KW数の差分</div><div class="cc-desc">自社分に creage との差分を積み上げ。赤い差分がコンテンツ投資で埋まる余地。</div><div class="canvas-wrap" style="height:220px"><canvas id="chart_gap"></canvas></div></div>
+      <div class="chart-card"><div class="cc-title">1KWあたりの平均流入効率（流入数 ÷ KW数）</div><div class="cc-desc">ihc の効率は creage に近い水準。KW数を増やすことが最重要施策。</div><div class="canvas-wrap" style="height:220px"><canvas id="chart_efficiency"></canvas></div></div>
     </div>
   </div>
 
-  <!-- S1: OVERVIEW -->
+  <!-- S2 -->
   <div class="section">
-    <div class="sec-head">
-      <span class="sec-num">01</span>
-      <div>
-        <div class="sec-title">ドメイン全体比較</div>
-        <div class="sec-desc">3サイトの流入規模・キーワード数・効率を比較します</div>
-      </div>
-    </div>
-    <div class="g2">
-      <div class="chart-card">
-        <div class="cc-title">月間オーガニック流入数の比較</div>
-        <div class="cc-desc">mymc.jp との流入差は約97倍。ihc と creage の差は4.5倍。</div>
-        <div class="canvas-wrap" style="height:240px"><canvas id="chart_traffic"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="cc-title">ランクインキーワード数の比較</div>
-        <div class="cc-desc">ihc は creage の約44%。コンテンツ拡充で伸び代は大きい。</div>
-        <div class="canvas-wrap" style="height:240px"><canvas id="chart_kwcount"></canvas></div>
-      </div>
-    </div>
-    <div class="g2">
-      <div class="chart-card">
-        <div class="cc-title">ihc vs creage ｜ 流入・KW数の差分</div>
-        <div class="cc-desc">自社分に creage との差分を積み上げ表示。赤い差分がコンテンツ投資で埋まる余地。</div>
-        <div class="canvas-wrap" style="height:220px"><canvas id="chart_gap"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="cc-title">1KWあたりの平均流入効率（流入数 ÷ KW数）</div>
-        <div class="cc-desc">ihc の効率は creage に近い水準。KW数を増やすことが最重要施策。</div>
-        <div class="canvas-wrap" style="height:220px"><canvas id="chart_efficiency"></canvas></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- S2: KEYWORD BATTLE -->
-  <div class="section">
-    <div class="sec-head">
-      <span class="sec-num">02</span>
-      <div>
-        <div class="sec-title">共通キーワード 順位バトル（ihc vs creage）</div>
-        <div class="sec-desc">両サイトが同時にランクインしている29キーワードの勝敗と順位比較</div>
-      </div>
-    </div>
+    <div class="sec-head"><span class="sec-num">02</span><div><div class="sec-title">共通キーワード 順位バトル（ihc vs creage）</div><div class="sec-desc">両サイトが同時にランクインしている29キーワードの勝敗と順位比較</div></div></div>
 
     <div class="g2" style="margin-bottom:14px">
-      <div class="chart-card" style="padding:18px 20px">
-        <div class="cc-title">共通KW 勝敗サマリー（全29KW）</div>
-        <div class="cc-desc">ihc が creage より上位表示できているKWの件数と推定流入への影響</div>
-        <div id="battle_scorecard"></div>
-      </div>
-      <div class="chart-card">
-        <div class="cc-title">検索ボリューム規模別 勝敗内訳</div>
-        <div class="cc-desc">大きい需要のKWで負けているほど流入損失が大きい。</div>
-        <div class="canvas-wrap" style="height:190px"><canvas id="chart_winloss"></canvas></div>
-      </div>
+      <div class="chart-card" style="padding:18px 20px"><div class="cc-title">共通KW 勝敗サマリー（全29KW）</div><div class="cc-desc">ihc が creage より上位表示できているKWの件数と流入への影響</div><div id="battle_scorecard"></div></div>
+      <div class="chart-card"><div class="cc-title">検索ボリューム規模別 勝敗内訳</div><div class="cc-desc">大きい需要のKWで負けているほど流入損失が大きい。</div><div class="canvas-wrap" style="height:190px"><canvas id="chart_winloss"></canvas></div></div>
     </div>
 
-    <div class="chart-card" style="margin-bottom:14px">
-      <div class="cc-title">主要キーワード 順位比較（ihc vs creage）</div>
-      <div class="cc-desc">月間検索数150件以上の共通キーワード。バーが短いほど上位。数値は現在の検索順位。</div>
-      <div class="canvas-wrap" style="height:340px"><canvas id="chart_rank_compare"></canvas></div>
+    <!-- 順位比較テーブル（横棒グラフの代替） -->
+    <div class="chart-card" style="margin-bottom:14px;padding:0;overflow:hidden;">
+      <div style="padding:18px 20px 10px">
+        <div class="cc-title">主要キーワード 順位比較（ihc vs creage）</div>
+        <div class="cc-desc">ihc の順位が高い順に並び替え。バーが左に長いほど上位。月間検索数150件以上のKW対象。</div>
+        <div style="display:flex;gap:16px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><div style="width:12px;height:10px;border-radius:2px;background:var(--ihc-fill);border:1.5px solid var(--ihc)"></div>ihc.or.jp</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><div style="width:12px;height:10px;border-radius:2px;background:var(--creage-fill);border:1.5px solid var(--creage)"></div>creage.or.jp</div>
+        </div>
+      </div>
+      <table class="rank-table" id="rank_compare_table">
+        <thead>
+          <tr>
+            <th class="sort-th" data-tbl="rank" data-col="kw"   data-type="str" style="width:36%">キーワード</th>
+            <th class="sort-th" data-tbl="rank" data-col="vol"  data-type="num" style="width:8%">月間検索数</th>
+            <th class="sort-th" data-tbl="rank" data-col="ihc"  data-type="num" style="width:28%">ihc 順位</th>
+            <th class="sort-th" data-tbl="rank" data-col="cr"   data-type="num" style="width:28%">creage 順位</th>
+          </tr>
+        </thead>
+        <tbody id="rank_table_body"></tbody>
+      </table>
     </div>
 
+    <!-- バブルチャート -->
     <div class="chart-card">
       <div class="cc-title">検索ボリューム × 順位 バブルチャート（ihc）</div>
-      <div class="cc-desc">バブルサイズ＝月間検索数。<span style="color:var(--win);font-weight:600">左上</span>＝高需要×高順位の優良KW。<span style="color:var(--lose);font-weight:600">右上</span>＝改善すれば流入が大きく伸びる優先ターゲット。</div>
-      <div class="canvas-wrap" style="height:300px"><canvas id="chart_bubble"></canvas></div>
-    </div>
-  </div>
-
-  <!-- S3: TABLE -->
-  <div class="section">
-    <div class="sec-head">
-      <span class="sec-num">03</span>
-      <div>
-        <div class="sec-title">共通キーワード詳細テーブル</div>
-        <div class="sec-desc">全29キーワードの順位・優劣を一覧表示</div>
+      <div class="cc-desc">バブルサイズ＝月間検索数。ゾーンで優先度が一目でわかる。※検索数600件以上・順位20位以下ははずれ値として下部に別掲。</div>
+      <div style="display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:11px;height:11px;border-radius:2px;background:rgba(41,146,77,0.1);border:1px solid rgba(41,146,77,.35)"></div><span style="color:var(--win);font-weight:600">維持ゾーン</span><span style="color:var(--text-muted)">（1〜10位×高需要）</span></div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:11px;height:11px;border-radius:2px;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,.3)"></div><span style="color:var(--lose);font-weight:600">優先対策ゾーン</span><span style="color:var(--text-muted)">（11位以下×高需要）</span></div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;"><div style="width:11px;height:11px;border-radius:2px;background:rgba(228,232,239,0.7);border:1px solid rgba(200,210,220,.6)"></div><span style="color:var(--text-muted);font-weight:600">低需要ゾーン</span><span style="color:var(--text-muted)">（検索数300未満）</span></div>
       </div>
-    </div>
-    <div class="chart-card" style="padding:0; overflow:hidden;">
-      <div class="tbl-wrap">
-        <table class="dt">
-          <thead>
-            <tr>
-              <th>キーワード</th><th>月間検索数</th><th>ボリューム比</th>
-              <th>ihc 順位</th><th>creage 順位</th><th>優劣</th>
-            </tr>
-          </thead>
-          <tbody id="kw_table_body"></tbody>
-        </table>
+      <div class="canvas-wrap" style="height:400px"><canvas id="chart_bubble"></canvas></div>
+      <div style="margin-top:14px;border-top:1px dashed var(--border2);padding-top:12px;">
+        <div style="font-size:.7rem;font-weight:600;color:var(--text-muted);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;">⚠️ はずれ値（検索数600件以上 または 順位20位以下）— グラフ外に別掲</div>
+        <div class="outlier-grid" id="outlier_cards"></div>
       </div>
     </div>
   </div>
 
-  <!-- S4: INSIGHTS -->
+  <!-- S3 -->
   <div class="section">
-    <div class="sec-head">
-      <span class="sec-num">04</span>
-      <div>
-        <div class="sec-title">戦略インサイト</div>
-        <div class="sec-desc">データから読み取れる強み・課題・機会</div>
-      </div>
+    <div class="sec-head"><span class="sec-num">03</span><div><div class="sec-title">共通キーワード詳細テーブル</div><div class="sec-desc">全29キーワードの順位・優劣を一覧表示</div></div></div>
+    <div class="chart-card" style="padding:0;overflow:hidden;">
+      <div class="tbl-wrap"><table class="dt"><thead><tr>
+        <th class="sort-th" data-tbl="detail" data-col="kw"  data-type="str">キーワード</th>
+        <th class="sort-th" data-tbl="detail" data-col="vol" data-type="num">月間検索数</th>
+        <th>ボリューム比</th>
+        <th class="sort-th" data-tbl="detail" data-col="ihc" data-type="num">ihc 順位</th>
+        <th class="sort-th" data-tbl="detail" data-col="cr"  data-type="num">creage 順位</th>
+        <th class="sort-th" data-tbl="detail" data-col="gap" data-type="num">差分</th>
+      </tr></thead><tbody id="kw_table_body"></tbody></table></div>
     </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">04</span><div><div class="sec-title">戦略インサイト</div><div class="sec-desc">データから読み取れる強み・課題・機会</div></div></div>
     <div class="ins-grid">
-      <div class="ins-card">
-        <div class="ins-icon">✅</div>
-        <div><span class="ins-badge ib-good">強み</span>
-        <div class="ins-text">「<strong>婦人科検診</strong>（12,100）」「<strong>人間ドック 女性</strong>（880）」「<strong>健康診断 女性専用</strong>」で<strong>1位</strong>維持。女性特化ブランドが確立されている。</div></div>
-      </div>
-      <div class="ins-card">
-        <div class="ins-icon">✅</div>
-        <div><span class="ins-badge ib-good">強み</span>
-        <div class="ins-text">被リンク<strong>941件</strong>・被リンク元<strong>176ドメイン</strong>・ドメイン年齢<strong>18年</strong>。外部評価の基盤が強固なため、コンテンツ改善が効率的に効く。</div></div>
-      </div>
-      <div class="ins-card">
-        <div class="ins-icon">⚠️</div>
-        <div><span class="ins-badge ib-warn">課題</span>
-        <div class="ins-text">「<strong>婦人科検診 痛い</strong>（880）」ihc <strong>15位</strong> vs creage <strong>1位</strong>。「<strong>子宮がん検診 痛い</strong>（2,400）」ihc <strong>19位</strong> vs creage <strong>5位</strong>。コラムが不足。</div></div>
-      </div>
-      <div class="ins-card">
-        <div class="ins-icon">⚠️</div>
-        <div><span class="ins-badge ib-warn">課題</span>
-        <div class="ins-text">流入数 ihc <strong>21,300</strong> vs creage <strong>94,885</strong>（約4.5倍差）。KW数（2,922 vs 6,577）の差が主因。コンテンツ量の差が流入差に直結している。</div></div>
-      </div>
-      <div class="ins-card">
-        <div class="ins-icon">🎯</div>
-        <div><span class="ins-badge ib-opp">機会</span>
-        <div class="ins-text">creage 1位の「<strong>婦人科検診 痛い</strong>」「<strong>乳腺超音波</strong>」「<strong>レディースドック</strong>」へ質の高いコラムを追加することで逆転の可能性あり。</div></div>
-      </div>
-      <div class="ins-card">
-        <div class="ins-icon">📈</div>
-        <div><span class="ins-badge ib-opp">機会</span>
-        <div class="ins-text">mymc は<strong>215,598KW</strong>の最大手だが女性特化ではない。「<strong>更年期障害</strong>」「<strong>甲状腺</strong>」等の女性向け医療コラムはブルーオーシャンの可能性あり。</div></div>
-      </div>
+      <div class="ins-card"><div class="ins-icon">✅</div><div><span class="ins-badge ib-good">強み</span><div class="ins-text">「<strong>婦人科検診</strong>（12,100）」「<strong>人間ドック 女性</strong>（880）」「<strong>健康診断 女性専用</strong>」で<strong>1位</strong>維持。女性特化ブランドが確立されている。</div></div></div>
+      <div class="ins-card"><div class="ins-icon">✅</div><div><span class="ins-badge ib-good">強み</span><div class="ins-text">被リンク<strong>941件</strong>・被リンク元<strong>176ドメイン</strong>・ドメイン年齢<strong>18年</strong>。外部評価の基盤が強固なため、コンテンツ改善が効率的に効く。</div></div></div>
+      <div class="ins-card"><div class="ins-icon">⚠️</div><div><span class="ins-badge ib-warn">課題</span><div class="ins-text">「<strong>婦人科検診 痛い</strong>（880）」ihc <strong>15位</strong> vs creage <strong>1位</strong>。「<strong>子宮がん検診 痛い</strong>（2,400）」ihc <strong>19位</strong> vs creage <strong>5位</strong>。コラムが不足。</div></div></div>
+      <div class="ins-card"><div class="ins-icon">⚠️</div><div><span class="ins-badge ib-warn">課題</span><div class="ins-text">流入数 ihc <strong>21,300</strong> vs creage <strong>94,885</strong>（約4.5倍差）。KW数（2,922 vs 6,577）の差が主因。コンテンツ量の差が流入差に直結している。</div></div></div>
+      <div class="ins-card"><div class="ins-icon">🎯</div><div><span class="ins-badge ib-opp">機会</span><div class="ins-text">creage 1位の「<strong>婦人科検診 痛い</strong>」「<strong>乳腺超音波</strong>」「<strong>レディースドック</strong>」へ質の高いコラムを追加することで逆転の可能性あり。</div></div></div>
+      <div class="ins-card"><div class="ins-icon">📈</div><div><span class="ins-badge ib-opp">機会</span><div class="ins-text">mymc は<strong>215,598KW</strong>の最大手だが女性特化ではない。「<strong>更年期障害</strong>」「<strong>甲状腺</strong>」等の女性向け医療コラムはブルーオーシャンの可能性あり。</div></div></div>
     </div>
   </div>
-
 </div>
 
 <footer>
@@ -642,350 +442,298 @@ footer {
 </footer>
 
 <script>
-var KW_DATA = [
-  {kw:"婦人科検診",                    ihc:1,  cr:4,  vol:12100},
-  {kw:"子宮がん検診 痛い",             ihc:19, cr:5,  vol:2400},
-  {kw:"乳がん とは",                   ihc:21, cr:7,  vol:1900},
-  {kw:"婦人科 おしり エコー 痛い",     ihc:17, cr:6,  vol:880},
-  {kw:"婦人科検診 痛い",               ihc:15, cr:1,  vol:880},
-  {kw:"レディースドック",               ihc:3,  cr:1,  vol:880},
-  {kw:"人間ドック 女性",               ihc:1,  cr:2,  vol:880},
-  {kw:"婦人科検診 方法",               ihc:48, cr:5,  vol:590},
-  {kw:"乳腺 超音波",                   ihc:2,  cr:1,  vol:390},
-  {kw:"女性 人間ドック おすすめ",       ihc:4,  cr:3,  vol:390},
-  {kw:"人間ドック レディース",         ihc:3,  cr:1,  vol:320},
-  {kw:"人間ドック 婦人科検診",         ihc:1,  cr:3,  vol:320},
-  {kw:"健康診断 東京 おすすめ",        ihc:7,  cr:5,  vol:320},
-  {kw:"健康診断 女子",                 ihc:1,  cr:2,  vol:260},
-  {kw:"乳がん検診 種類",               ihc:8,  cr:2,  vol:260},
-  {kw:"人間ドック 女性 おすすめ 東京", ihc:3,  cr:2,  vol:260},
-  {kw:"健康診断 女性専用",             ihc:1,  cr:3,  vol:210},
-  {kw:"人間ドック 女性 東京",          ihc:2,  cr:3,  vol:210},
-  {kw:"女性 人間ドック 東京",          ihc:1,  cr:3,  vol:210},
-  {kw:"有楽町 レディース クリニック",  ihc:2,  cr:1,  vol:210},
-  {kw:"有楽町 婦人科 クリニック",      ihc:8,  cr:3,  vol:170},
-  {kw:"女性専用 人間ドック",           ihc:1,  cr:2,  vol:170},
-  {kw:"健康診断 東京 おすすめ 女性",   ihc:2,  cr:3,  vol:170},
-  {kw:"レディースドック 東京",         ihc:3,  cr:4,  vol:170},
-  {kw:"人間ドック 東京 おすすめ 女性", ihc:5,  cr:2,  vol:170},
-  {kw:"子宮 超音波検査 痛い",          ihc:46, cr:1,  vol:140},
-  {kw:"婦人科検診 東京",               ihc:3,  cr:2,  vol:140},
-  {kw:"30代女性 人間ドック",           ihc:4,  cr:1,  vol:90},
-  {kw:"健康診断 女性専用 東京",        ihc:1,  cr:2,  vol:90}
+var KW_DATA=[
+  {kw:"婦人科検診",ihc:1,cr:4,vol:12100},
+  {kw:"子宮がん検診 痛い",ihc:19,cr:5,vol:2400},
+  {kw:"乳がん とは",ihc:21,cr:7,vol:1900},
+  {kw:"婦人科 おしり エコー 痛い",ihc:17,cr:6,vol:880},
+  {kw:"婦人科検診 痛い",ihc:15,cr:1,vol:880},
+  {kw:"レディースドック",ihc:3,cr:1,vol:880},
+  {kw:"人間ドック 女性",ihc:1,cr:2,vol:880},
+  {kw:"婦人科検診 方法",ihc:48,cr:5,vol:590},
+  {kw:"乳腺 超音波",ihc:2,cr:1,vol:390},
+  {kw:"女性 人間ドック おすすめ",ihc:4,cr:3,vol:390},
+  {kw:"人間ドック レディース",ihc:3,cr:1,vol:320},
+  {kw:"人間ドック 婦人科検診",ihc:1,cr:3,vol:320},
+  {kw:"健康診断 東京 おすすめ",ihc:7,cr:5,vol:320},
+  {kw:"健康診断 女子",ihc:1,cr:2,vol:260},
+  {kw:"乳がん検診 種類",ihc:8,cr:2,vol:260},
+  {kw:"人間ドック 女性 おすすめ 東京",ihc:3,cr:2,vol:260},
+  {kw:"健康診断 女性専用",ihc:1,cr:3,vol:210},
+  {kw:"人間ドック 女性 東京",ihc:2,cr:3,vol:210},
+  {kw:"女性 人間ドック 東京",ihc:1,cr:3,vol:210},
+  {kw:"有楽町 レディース クリニック",ihc:2,cr:1,vol:210},
+  {kw:"有楽町 婦人科 クリニック",ihc:8,cr:3,vol:170},
+  {kw:"女性専用 人間ドック",ihc:1,cr:2,vol:170},
+  {kw:"健康診断 東京 おすすめ 女性",ihc:2,cr:3,vol:170},
+  {kw:"レディースドック 東京",ihc:3,cr:4,vol:170},
+  {kw:"人間ドック 東京 おすすめ 女性",ihc:5,cr:2,vol:170},
+  {kw:"子宮 超音波検査 痛い",ihc:46,cr:1,vol:140},
+  {kw:"婦人科検診 東京",ihc:3,cr:2,vol:140},
+  {kw:"30代女性 人間ドック",ihc:4,cr:1,vol:90},
+  {kw:"健康診断 女性専用 東京",ihc:1,cr:2,vol:90}
 ];
 
-var C = {
-  ihc:"#5B9BD5", iF:"rgba(91,155,213,0.15)",
+var C={
+  ihc:"#5B9BD5",iF:"rgba(91,155,213,0.15)",
   cr:"#70C48A",  cF:"rgba(112,196,138,0.15)",
   my:"#F4A86A",  mF:"rgba(244,168,106,0.15)",
   win:"#29924D", wF:"rgba(41,146,77,0.15)",
   lose:"#C0392B",lF:"rgba(192,57,43,0.1)",
-  grid:"rgba(228,232,239,1)", ax:"#9AA3BB"
+  grid:"rgba(228,232,239,1)",ax:"#9AA3BB"
 };
+Chart.defaults.color=C.ax;
+Chart.defaults.font.family="'Noto Sans JP',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.plugins.legend.labels.usePointStyle=true;
+Chart.defaults.plugins.legend.labels.pointStyle="circle";
+Chart.defaults.plugins.legend.labels.padding=14;
+function grd(){return{color:C.grid,drawBorder:false};}
 
-Chart.defaults.color = C.ax;
-Chart.defaults.font.family = "'Noto Sans JP', sans-serif";
-Chart.defaults.font.size = 11;
-Chart.defaults.plugins.legend.labels.usePointStyle = true;
-Chart.defaults.plugins.legend.labels.pointStyle = "circle";
-Chart.defaults.plugins.legend.labels.padding = 14;
-
-function grd() { return {color:C.grid, drawBorder:false}; }
-
-/* CHART 1 — TRAFFIC */
-new Chart(document.getElementById("chart_traffic"), {
-  type:"bar",
-  data:{
-    labels:["ihc.or.jp","creage.or.jp","mymc.jp"],
-    datasets:[{
-      data:[21300,94885,2071837],
-      backgroundColor:[C.iF,C.cF,C.mF],
-      borderColor:[C.ihc,C.cr,C.my],
-      borderWidth:2, borderRadius:6
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    layout:{padding:{left:12,right:12,top:8}},
-    plugins:{
-      legend:{display:false},
-      tooltip:{callbacks:{label:function(c){return " "+c.parsed.y.toLocaleString()+" 件";}}}
-    },
-    scales:{
-      y:{
-        grid:grd(),
-        ticks:{
-          maxTicksLimit:6, padding:10,
-          callback:function(v){
-            if(v>=1000000) return (v/1000000).toFixed(1)+"M";
-            if(v>=1000)    return (v/1000).toFixed(0)+"K";
-            return v;
-          }
-        }
-      },
-      x:{grid:{display:false}}
-    }
-  }
+/* C1 TRAFFIC */
+new Chart(document.getElementById("chart_traffic"),{
+  type:"bar",data:{labels:["ihc.or.jp","creage.or.jp","mymc.jp"],datasets:[{data:[21300,94885,2071837],backgroundColor:[C.iF,C.cF,C.mF],borderColor:[C.ihc,C.cr,C.my],borderWidth:2,borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,layout:{padding:{left:12,right:12,top:8}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return" "+c.parsed.y.toLocaleString()+" 件";}}}},scales:{y:{grid:grd(),ticks:{maxTicksLimit:6,padding:10,callback:function(v){if(v>=1000000)return(v/1000000).toFixed(1)+"M";if(v>=1000)return(v/1000).toFixed(0)+"K";return v;}}},x:{grid:{display:false}}}}
 });
 
-/* CHART 2 — KW COUNT */
-new Chart(document.getElementById("chart_kwcount"), {
-  type:"bar",
-  data:{
-    labels:["ihc.or.jp","creage.or.jp","mymc.jp"],
-    datasets:[{
-      data:[2922,6577,215598],
-      backgroundColor:[C.iF,C.cF,C.mF],
-      borderColor:[C.ihc,C.cr,C.my],
-      borderWidth:2, borderRadius:6
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    layout:{padding:{left:12,right:12,top:8}},
-    plugins:{
-      legend:{display:false},
-      tooltip:{callbacks:{label:function(c){return " "+c.parsed.y.toLocaleString()+" KW";}}}
-    },
-    scales:{
-      y:{
-        grid:grd(),
-        ticks:{
-          maxTicksLimit:6, padding:10,
-          callback:function(v){
-            if(v>=1000) return (v/1000).toFixed(0)+"K";
-            return v;
-          }
-        }
-      },
-      x:{grid:{display:false}}
-    }
-  }
+/* C2 KW COUNT */
+new Chart(document.getElementById("chart_kwcount"),{
+  type:"bar",data:{labels:["ihc.or.jp","creage.or.jp","mymc.jp"],datasets:[{data:[2922,6577,215598],backgroundColor:[C.iF,C.cF,C.mF],borderColor:[C.ihc,C.cr,C.my],borderWidth:2,borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,layout:{padding:{left:12,right:12,top:8}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return" "+c.parsed.y.toLocaleString()+" KW";}}}},scales:{y:{grid:grd(),ticks:{maxTicksLimit:6,padding:10,callback:function(v){if(v>=1000)return(v/1000).toFixed(0)+"K";return v;}}},x:{grid:{display:false}}}}
 });
 
-/* CHART 3 — GAP STACKED */
-new Chart(document.getElementById("chart_gap"), {
-  type:"bar",
-  data:{
-    labels:["月間流入数","ランクインKW数"],
-    datasets:[
-      {label:"ihc.or.jp", data:[21300,2922], backgroundColor:C.iF, borderColor:C.ihc, borderWidth:2},
-      {label:"creageとの差分", data:[73585,3655], backgroundColor:"rgba(192,57,43,0.08)", borderColor:"rgba(192,57,43,0.3)", borderWidth:1.5}
-    ]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    layout:{padding:{left:12,right:12,top:8}},
-    plugins:{
-      legend:{position:"top"},
-      tooltip:{callbacks:{label:function(c){return " "+c.dataset.label+": "+c.parsed.y.toLocaleString();}}}
-    },
-    scales:{
-      y:{
-        stacked:true, grid:grd(),
-        ticks:{
-          maxTicksLimit:6, padding:10,
-          callback:function(v){
-            if(v>=1000) return (v/1000).toFixed(0)+"K";
-            return v;
-          }
-        }
-      },
-      x:{stacked:true, grid:{display:false}}
-    }
-  }
+/* C3 GAP */
+new Chart(document.getElementById("chart_gap"),{
+  type:"bar",data:{labels:["月間流入数","ランクインKW数"],datasets:[{label:"ihc.or.jp",data:[21300,2922],backgroundColor:C.iF,borderColor:C.ihc,borderWidth:2},{label:"creageとの差分",data:[73585,3655],backgroundColor:"rgba(192,57,43,0.08)",borderColor:"rgba(192,57,43,0.3)",borderWidth:1.5}]},
+  options:{responsive:true,maintainAspectRatio:false,layout:{padding:{left:12,right:12,top:8}},plugins:{legend:{position:"top"},tooltip:{callbacks:{label:function(c){return" "+c.dataset.label+": "+c.parsed.y.toLocaleString();}}}},scales:{y:{stacked:true,grid:grd(),ticks:{maxTicksLimit:6,padding:10,callback:function(v){if(v>=1000)return(v/1000).toFixed(0)+"K";return v;}}},x:{stacked:true,grid:{display:false}}}}
 });
 
-/* CHART 4 — EFFICIENCY */
-new Chart(document.getElementById("chart_efficiency"), {
-  type:"bar",
-  data:{
-    labels:["ihc.or.jp","creage.or.jp","mymc.jp"],
-    datasets:[{
-      data:[+(21300/2922).toFixed(1), +(94885/6577).toFixed(1), +(2071837/215598).toFixed(1)],
-      backgroundColor:[C.iF,C.cF,C.mF],
-      borderColor:[C.ihc,C.cr,C.my],
-      borderWidth:2, borderRadius:6
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    layout:{padding:{left:12,right:12,top:8}},
-    plugins:{
-      legend:{display:false},
-      tooltip:{callbacks:{label:function(c){return " "+c.parsed.y+" 流入/KW";}}}
-    },
-    scales:{
-      y:{grid:grd(), ticks:{maxTicksLimit:6, padding:10}},
-      x:{grid:{display:false}}
-    }
-  }
+/* C4 EFFICIENCY */
+new Chart(document.getElementById("chart_efficiency"),{
+  type:"bar",data:{labels:["ihc.or.jp","creage.or.jp","mymc.jp"],datasets:[{data:[+(21300/2922).toFixed(1),+(94885/6577).toFixed(1),+(2071837/215598).toFixed(1)],backgroundColor:[C.iF,C.cF,C.mF],borderColor:[C.ihc,C.cr,C.my],borderWidth:2,borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,layout:{padding:{left:12,right:12,top:8}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return" "+c.parsed.y+" 流入/KW";}}}},scales:{y:{grid:grd(),ticks:{maxTicksLimit:6,padding:10}},x:{grid:{display:false}}}}
 });
 
 /* SCORECARD */
 (function(){
-  var win=0, lose=0, tie=0, wv=0, lv=0, tv=0;
-  KW_DATA.forEach(function(d){
-    if(d.ihc<d.cr)      {win++;  wv+=d.vol;}
-    else if(d.ihc>d.cr) {lose++; lv+=d.vol;}
-    else                {tie++;  tv+=d.vol;}
-  });
-  var tot=win+lose+tie;
-  var wp=Math.round(win/tot*100), lp=Math.round(lose/tot*100), tp=100-wp-lp;
-  document.getElementById("battle_scorecard").innerHTML =
-    '<div class="scorecard">'+
-      '<div class="sc-block sc-win">'+
-        '<div class="sc-val">'+win+'</div>'+
-        '<div class="sc-label">自社優位</div>'+
-        '<div class="sc-sub">'+wp+'% ／ 流入 '+(wv/1000).toFixed(1)+'K件/月相当</div>'+
-      '</div>'+
-      '<div class="sc-block sc-tie">'+
-        '<div class="sc-val">'+tie+'</div>'+
-        '<div class="sc-label">同順位</div>'+
-        '<div class="sc-sub">'+tp+'%</div>'+
-      '</div>'+
-      '<div class="sc-block sc-lose">'+
-        '<div class="sc-val">'+lose+'</div>'+
-        '<div class="sc-label">creage優位</div>'+
-        '<div class="sc-sub">'+lp+'% ／ 機会損失 '+(lv/1000).toFixed(1)+'K件/月</div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="sc-progress" style="margin-top:10px">'+
-      '<div class="sc-prog-win"  style="width:'+wp+'%"></div>'+
-      '<div class="sc-prog-tie"  style="width:'+tp+'%"></div>'+
-      '<div class="sc-prog-lose" style="width:'+lp+'%"></div>'+
-    '</div>'+
+  var win=0,lose=0,tie=0,wv=0,lv=0,tv=0;
+  KW_DATA.forEach(function(d){if(d.ihc<d.cr){win++;wv+=d.vol;}else if(d.ihc>d.cr){lose++;lv+=d.vol;}else{tie++;tv+=d.vol;}});
+  var tot=win+lose+tie,wp=Math.round(win/tot*100),lp=Math.round(lose/tot*100),tp=100-wp-lp;
+  document.getElementById("battle_scorecard").innerHTML=
+    '<div class="scorecard"><div class="sc-block sc-win"><div class="sc-val">'+win+'</div><div class="sc-label">自社優位</div><div class="sc-sub">'+wp+'% ／ '+(wv/1000).toFixed(1)+'K件/月相当</div></div>'+
+    '<div class="sc-block sc-tie"><div class="sc-val">'+tie+'</div><div class="sc-label">同順位</div><div class="sc-sub">'+tp+'%</div></div>'+
+    '<div class="sc-block sc-lose"><div class="sc-val">'+lose+'</div><div class="sc-label">creage優位</div><div class="sc-sub">'+lp+'% ／ 機会損失 '+(lv/1000).toFixed(1)+'K件/月</div></div></div>'+
+    '<div class="sc-progress" style="margin-top:10px"><div class="sc-prog-win" style="width:'+wp+'%"></div><div class="sc-prog-tie" style="width:'+tp+'%"></div><div class="sc-prog-lose" style="width:'+lp+'%"></div></div>'+
     '<div style="margin-top:7px;font-size:11px;color:var(--text-muted)">全'+tot+'KW ／ 月間検索ボリューム合計 '+(wv+lv+tv).toLocaleString()+'件</div>';
 })();
 
-/* CHART 5 — WIN/LOSE BY VOLUME */
+/* WIN/LOSE BY VOLUME */
 (function(){
-  var grps=[
-    {label:"大（1,000+）",  min:1000},
-    {label:"中（300〜999）",min:300, max:999},
-    {label:"小（〜299）",   min:0,   max:299}
-  ];
+  var grps=[{label:"大（1,000+）",min:1000},{label:"中（300〜999）",min:300,max:999},{label:"小（〜299）",min:0,max:299}];
   var wD=[],lD=[],tD=[];
-  grps.forEach(function(g){
-    var w=0,l=0,t=0;
-    KW_DATA.forEach(function(d){
-      if(d.vol<g.min||(g.max&&d.vol>g.max)) return;
-      if(d.ihc<d.cr) w++; else if(d.ihc>d.cr) l++; else t++;
-    });
-    wD.push(w); lD.push(l); tD.push(t);
-  });
+  grps.forEach(function(g){var w=0,l=0,t=0;KW_DATA.forEach(function(d){if(d.vol<g.min||(g.max&&d.vol>g.max))return;if(d.ihc<d.cr)w++;else if(d.ihc>d.cr)l++;else t++;});wD.push(w);lD.push(l);tD.push(t);});
   new Chart(document.getElementById("chart_winloss"),{
-    type:"bar",
-    data:{
-      labels:grps.map(function(g){return g.label;}),
-      datasets:[
-        {label:"自社優位",    data:wD, backgroundColor:C.wF, borderColor:C.win,  borderWidth:1.5, borderRadius:4},
-        {label:"同順位",      data:tD, backgroundColor:"rgba(148,163,184,0.15)", borderColor:"#94A3B8", borderWidth:1.5, borderRadius:4},
-        {label:"creage優位",  data:lD, backgroundColor:C.lF, borderColor:C.lose, borderWidth:1.5, borderRadius:4}
-      ]
-    },
+    type:"bar",data:{labels:grps.map(function(g){return g.label;}),datasets:[{label:"自社優位",data:wD,backgroundColor:C.wF,borderColor:C.win,borderWidth:1.5,borderRadius:4},{label:"同順位",data:tD,backgroundColor:"rgba(148,163,184,0.15)",borderColor:"#94A3B8",borderWidth:1.5,borderRadius:4},{label:"creage優位",data:lD,backgroundColor:C.lF,borderColor:C.lose,borderWidth:1.5,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{left:8,right:8,top:4}},plugins:{legend:{position:"top",labels:{boxWidth:8,padding:10}},tooltip:{callbacks:{label:function(c){return" "+c.dataset.label+": "+c.parsed.y+"KW";}}}},scales:{y:{grid:grd(),ticks:{maxTicksLimit:5,padding:8,stepSize:1}},x:{grid:{display:false}}}}
+  });
+})();
+
+/* RANK COMPARE TABLE — sortable */
+var RANK_DATA = KW_DATA.filter(function(d){return d.vol>=150;});
+var rankSort = {col:"ihc", dir:"asc"};
+
+function renderRankTable() {
+  var data = RANK_DATA.slice().sort(function(a,b){
+    var av = rankSort.col==="kw" ? a.kw : a[rankSort.col];
+    var bv = rankSort.col==="kw" ? b.kw : b[rankSort.col];
+    if(typeof av==="string") return rankSort.dir==="asc" ? av.localeCompare(bv,"ja") : bv.localeCompare(av,"ja");
+    return rankSort.dir==="asc" ? av-bv : bv-av;
+  });
+  var tb = document.getElementById("rank_table_body");
+  tb.innerHTML = "";
+  data.forEach(function(d){
+    var win=d.ihc<d.cr, tie=d.ihc===d.cr;
+    var badge=win?'<span class="win-badge">自社優位</span>':tie?'<span class="tie-badge">同順位</span>':'<span class="lose-badge">creage優位</span>';
+    var ihcColor=d.ihc<=3?"#1A66C2":d.ihc<=10?"#5A6380":"#C0392B";
+    var crColor =d.cr <=3?"#2A8C50":d.cr <=10?"#5A6380":"#C0392B";
+    var ihcPct=Math.min(d.ihc/20*100,100), crPct=Math.min(d.cr/20*100,100);
+    var tr=document.createElement("tr");
+    tr.innerHTML=
+      '<td class="kw-name">'+d.kw+'</td>'+
+      '<td style="font-size:.7rem;color:var(--text-muted);">'+d.vol.toLocaleString()+'</td>'+
+      '<td class="bar-cell"><div class="bar-wrap">'+
+        '<div class="bar-track"><div class="bar-fill-ihc" style="width:'+ihcPct+'%;background:'+ihcColor+'"></div></div>'+
+        '<span class="bar-num" style="color:'+ihcColor+'">'+d.ihc+'位</span>'+badge+
+      '</div></td>'+
+      '<td class="bar-cell"><div class="bar-wrap">'+
+        '<div class="bar-track"><div class="bar-fill-creage" style="width:'+crPct+'%;background:'+crColor+'"></div></div>'+
+        '<span class="bar-num" style="color:'+crColor+'">'+d.cr+'位</span>'+
+      '</div></td>';
+    tb.appendChild(tr);
+  });
+  document.querySelectorAll('[data-tbl="rank"]').forEach(function(th){
+    th.classList.remove("asc","desc");
+    if(th.dataset.col===rankSort.col) th.classList.add(rankSort.dir);
+  });
+}
+renderRankTable();
+
+/* BUBBLE CHART */
+(function(){
+  var OUTLIERS =KW_DATA.filter(function(d){return d.vol>=600||d.ihc>=20;});
+  var PLOT_DATA=KW_DATA.filter(function(d){return d.vol<600&&d.ihc<20;});
+
+  /* outlier cards */
+  var cardWrap=document.getElementById("outlier_cards");
+  OUTLIERS.forEach(function(d){
+    var reasons=[];
+    if(d.vol>=600)reasons.push("検索数600+");
+    if(d.ihc>=20)reasons.push("順位20位以下");
+    var isG=d.ihc<=10;
+    var bgC =isG?"var(--win-bg)" :"var(--lose-bg)";
+    var bdC =isG?"#B6E4C5"       :"#F4B8B2";
+    var rkC =isG?"var(--win)"    :"var(--lose)";
+    var zone=isG?"維持ゾーン"    :"優先対策ゾーン";
+    var znC =isG?"var(--win)"    :"var(--lose)";
+    var card=document.createElement("div");
+    card.className="outlier-card";
+    card.style.background=bgC;
+    card.style.border="1px solid "+bdC;
+    card.innerHTML=
+      '<div class="outlier-card-head">'+d.kw+'</div>'+
+      '<div class="outlier-card-reason">除外理由：'+reasons.join(' / ')+'</div>'+
+      '<div class="outlier-card-body">'+
+        '<div><div class="outlier-stat-val" style="color:'+rkC+'">'+d.ihc+'位</div><div class="outlier-stat-lbl">現在の順位</div></div>'+
+        '<div><div class="outlier-stat-val" style="color:var(--text)">'+d.vol.toLocaleString()+'</div><div class="outlier-stat-lbl">月間検索数</div></div>'+
+        '<div class="outlier-zone" style="background:'+bgC+';border:1px solid '+bdC+';color:'+znC+'">'+zone+'</div>'+
+      '</div>';
+    cardWrap.appendChild(card);
+  });
+
+  /* zone plugin */
+  var zonePlugin={id:"zonePlugin",beforeDraw:function(chart){
+    var c2=chart.ctx,xA=chart.scales.x,yA=chart.scales.y;
+    var x0=xA.getPixelForValue(0),x10=xA.getPixelForValue(10),x20=xA.getPixelForValue(20);
+    var y300=yA.getPixelForValue(300),yTop=yA.getPixelForValue(440),yBot=yA.getPixelForValue(0);
+    c2.save();c2.beginPath();c2.rect(xA.left,yA.top,xA.width,yA.height);c2.clip();
+    c2.fillStyle="rgba(41,146,77,0.07)";c2.fillRect(x0,yTop,x10-x0,y300-yTop);
+    c2.fillStyle="rgba(192,57,43,0.06)";c2.fillRect(x10,yTop,x20-x10,y300-yTop);
+    c2.fillStyle="rgba(228,232,239,0.45)";c2.fillRect(x0,y300,x20-x0,yBot-y300);
+    c2.strokeStyle="rgba(100,120,160,0.15)";c2.lineWidth=1;c2.setLineDash([4,4]);
+    c2.beginPath();c2.moveTo(x10,yA.top);c2.lineTo(x10,yA.bottom);c2.stroke();
+    c2.beginPath();c2.moveTo(xA.left,y300);c2.lineTo(xA.right,y300);c2.stroke();
+    c2.restore();
+  }};
+
+  /* label plugin with collision avoidance */
+  var labelPlugin={id:"labelPlugin",afterDraw:function(chart){
+    var c2=chart.ctx,meta=chart.getDatasetMeta(0);
+    c2.save();c2.font="500 9px 'Noto Sans JP',sans-serif";
+    var pts=[];
+    meta.data.forEach(function(el,i){
+      var pt=chart.data.datasets[0].data[i];
+      if(!el||!pt)return;
+      var r=el.options?el.options.radius:6;
+      pts.push({px:el.x,py:el.y,r:r,kw:pt._kw,ihc:pt.x,vol:pt.y});
+    });
+    var placed=[];
+    var dirs=[{ox:0,oy:-1},{ox:1,oy:-.5},{ox:-1,oy:-.5},{ox:0,oy:1},{ox:1,oy:.5},{ox:-1,oy:.5}];
+    pts.forEach(function(p){
+      var isHV=p.vol>=300,isGR=p.ihc<=10;
+      var color=isHV&&isGR?"#1E7A40":isHV&&!isGR?"#A93226":"#8090A8";
+      var lbl=p.kw.length>10?p.kw.slice(0,9)+"\u2026":p.kw;
+      var tw=c2.measureText(lbl).width,gap=p.r+5;
+      var best=dirs[0],bestS=999;
+      dirs.forEach(function(d){
+        var lx=p.px+d.ox*gap,ly=p.py+d.oy*gap,score=0;
+        placed.forEach(function(q){if(Math.abs(lx-q.lx)<tw+6&&Math.abs(ly-q.ly)<14)score+=10;});
+        if(score<bestS){bestS=score;best=d;}
+      });
+      var lx=p.px+best.ox*gap,ly=p.py+best.oy*(gap+6);
+      placed.push({lx:lx,ly:ly});
+      c2.textAlign="center";c2.fillStyle=color;c2.fillText(lbl,lx,ly);
+    });
+    c2.restore();
+  }};
+
+  new Chart(document.getElementById("chart_bubble"),{
+    type:"bubble",plugins:[zonePlugin,labelPlugin],
+    data:{datasets:[{
+      label:"ihc.or.jp",
+      data:PLOT_DATA.map(function(d){return{x:d.ihc,y:d.vol,r:Math.sqrt(d.vol)/3.8,_kw:d.kw};}),
+      backgroundColor:function(c){var pt=c.raw;if(!pt)return C.iF;if(pt.y>=300&&pt.x<=10)return"rgba(41,146,77,0.28)";if(pt.y>=300&&pt.x>10)return"rgba(192,57,43,0.24)";return"rgba(91,155,213,0.22)";},
+      borderColor:function(c){var pt=c.raw;if(!pt)return C.ihc;if(pt.y>=300&&pt.x<=10)return"#29924D";if(pt.y>=300&&pt.x>10)return"#C0392B";return C.ihc;},
+      borderWidth:1.5
+    }]},
     options:{
-      responsive:true, maintainAspectRatio:false,
-      layout:{padding:{left:8,right:8,top:4}},
-      plugins:{
-        legend:{position:"top", labels:{boxWidth:8, padding:10}},
-        tooltip:{callbacks:{label:function(c){return " "+c.dataset.label+": "+c.parsed.y+"KW";}}}
-      },
+      responsive:true,maintainAspectRatio:false,
+      layout:{padding:{left:10,right:20,top:28,bottom:8}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var d=c.raw;var z=d.y>=300&&d.x<=10?"維持ゾーン":d.y>=300&&d.x>10?"優先対策ゾーン":"低需要ゾーン";return[" "+d._kw," 順位："+d.x+"位　検索数："+d.y.toLocaleString()+"件"," ゾーン："+z];}}}},
       scales:{
-        y:{grid:grd(), ticks:{maxTicksLimit:5, padding:8, stepSize:1}},
-        x:{grid:{display:false}}
+        x:{min:0,max:20,grid:grd(),title:{display:true,text:"現在の検索順位（左ほど上位）",color:C.ax},ticks:{stepSize:2,padding:6,callback:function(v){return v+"位";}}},
+        y:{min:0,max:440,grid:grd(),title:{display:true,text:"月間検索数（件）",color:C.ax},ticks:{stepSize:50,padding:8,callback:function(v){return v;}}}
       }
     }
   });
 })();
 
-/* CHART 6 — RANK COMPARE */
-var topKws = KW_DATA.filter(function(d){return d.vol>=160;});
-new Chart(document.getElementById("chart_rank_compare"),{
-  type:"bar",
-  data:{
-    labels:topKws.map(function(d){return d.kw;}),
-    datasets:[
-      {label:"ihc.or.jp",    data:topKws.map(function(d){return Math.min(d.ihc,52);}), backgroundColor:C.iF, borderColor:C.ihc, borderWidth:1.5, borderRadius:3},
-      {label:"creage.or.jp", data:topKws.map(function(d){return Math.min(d.cr,52);}),  backgroundColor:C.cF, borderColor:C.cr,  borderWidth:1.5, borderRadius:3}
-    ]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    indexAxis:"y",
-    layout:{padding:{left:0,right:16,top:4}},
-    plugins:{
-      legend:{position:"top"},
-      tooltip:{callbacks:{label:function(c){return " "+c.dataset.label+": "+c.parsed.x+"位";}}}
-    },
-    scales:{
-      x:{
-        min:0, max:52, grid:grd(),
-        title:{display:true, text:"検索順位（左が上位）", color:C.ax},
-        ticks:{maxTicksLimit:7, padding:6, callback:function(v){return v+"位";}}
-      },
-      y:{grid:{display:false}, ticks:{font:{size:11}, padding:4}}
-    }
-  }
-});
+/* DETAIL TABLE — sortable */
+var mv = Math.max.apply(null, KW_DATA.map(function(d){return d.vol;}));
+var detailSort = {col:"vol", dir:"desc"};
 
-/* CHART 7 — BUBBLE */
-new Chart(document.getElementById("chart_bubble"),{
-  type:"bubble",
-  data:{
-    datasets:[{
-      label:"ihc.or.jp",
-      data:KW_DATA.map(function(d){return {x:d.ihc, y:d.vol, r:Math.sqrt(d.vol)/6.5, _kw:d.kw};}),
-      backgroundColor:C.iF, borderColor:C.ihc, borderWidth:1.5
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    layout:{padding:{left:8,right:16,top:8}},
-    plugins:{
-      legend:{display:false},
-      tooltip:{callbacks:{label:function(c){return " "+c.raw._kw+" ｜ "+c.raw.x+"位 ｜ "+c.raw.y.toLocaleString()+"件";}}}
-    },
-    scales:{
-      x:{
-        min:0, max:55, grid:grd(),
-        title:{display:true, text:"現在の検索順位（左ほど上位）", color:C.ax},
-        ticks:{maxTicksLimit:7, padding:6, callback:function(v){return v+"位";}}
-      },
-      y:{
-        type:"logarithmic", grid:grd(),
-        title:{display:true, text:"月間検索数", color:C.ax},
-        ticks:{
-          maxTicksLimit:6, padding:10,
-          callback:function(v){if(v>=1000)return (v/1000)+"K"; return v;}
-        }
-      }
-    }
-  }
-});
-
-/* TABLE */
-function rp(n){
+function rpBadge(n){
   if(!n) return '<span class="rpnone">-</span>';
-  var cls = n===1?"rp1":n<=3?"rp3":n<=10?"rp10":"rpover";
+  var cls=n===1?"rp1":n<=3?"rp3":n<=10?"rp10":"rpover";
   return '<span class="rp '+cls+'">'+n+'</span>';
 }
-var mv = Math.max.apply(null,KW_DATA.map(function(d){return d.vol;}));
-var tb = document.getElementById("kw_table_body");
-KW_DATA.slice().sort(function(a,b){return b.vol-a.vol;}).forEach(function(d){
-  var win=d.ihc<d.cr, tie=d.ihc===d.cr;
-  var ac=win?"adv-win":tie?"adv-tie":"adv-lose";
-  var at=win?"自社優位":tie?"同順位":"creage優位";
-  var pct=(d.vol/mv*100).toFixed(1);
-  var tr=document.createElement("tr");
-  tr.innerHTML=
-    '<td class="kw-text">'+d.kw+'</td>'+
-    '<td><span class="vol-num">'+d.vol.toLocaleString()+'</span></td>'+
-    '<td><div class="vbar-row"><div class="vbar-bg"><div class="vbar-fill" style="width:'+pct+'%"></div></div>'+
-    '<span style="font-size:11px;color:var(--text-muted)">'+pct+'%</span></div></td>'+
-    '<td>'+rp(d.ihc)+'</td><td>'+rp(d.cr)+'</td>'+
-    '<td><span class="adv '+ac+'">'+at+'</span></td>';
-  tb.appendChild(tr);
+
+function renderDetailTable() {
+  var data = KW_DATA.slice().sort(function(a,b){
+    var col = detailSort.col;
+    var av, bv;
+    if(col==="kw")       { av=a.kw;      bv=b.kw; }
+    else if(col==="gap") { av=a.ihc-a.cr; bv=b.ihc-b.cr; }
+    else                 { av=a[col];     bv=b[col]; }
+    if(typeof av==="string") return detailSort.dir==="asc"?av.localeCompare(bv,"ja"):bv.localeCompare(av,"ja");
+    return detailSort.dir==="asc" ? av-bv : bv-av;
+  });
+  var tb = document.getElementById("kw_table_body");
+  tb.innerHTML = "";
+  data.forEach(function(d){
+    var gap=d.ihc-d.cr;
+    var gapStr=gap<0?'<span style="color:var(--win);font-weight:600">&#9650;'+Math.abs(gap)+'</span>':gap>0?'<span style="color:var(--lose);font-weight:600">&#9660;'+gap+'</span>':'<span style="color:var(--tie)">&#9472;</span>';
+    var pct=(d.vol/mv*100).toFixed(1);
+    var tr=document.createElement("tr");
+    tr.innerHTML=
+      '<td class="kw-text">'+d.kw+'</td>'+
+      '<td><span class="vol-num">'+d.vol.toLocaleString()+'</span></td>'+
+      '<td><div class="vbar-row"><div class="vbar-bg"><div class="vbar-fill" style="width:'+pct+'%"></div></div><span style="font-size:.7rem;color:var(--text-muted)">'+pct+'%</span></div></td>'+
+      '<td>'+rpBadge(d.ihc)+'</td>'+
+      '<td>'+rpBadge(d.cr)+'</td>'+
+      '<td>'+gapStr+'</td>';
+    tb.appendChild(tr);
+  });
+  document.querySelectorAll('[data-tbl="detail"]').forEach(function(th){
+    th.classList.remove("asc","desc");
+    if(th.dataset.col===detailSort.col) th.classList.add(detailSort.dir);
+  });
+}
+renderDetailTable();
+
+/* SORT CLICK HANDLER */
+document.querySelectorAll('.sort-th').forEach(function(th){
+  th.addEventListener('click', function(){
+    var tbl=th.dataset.tbl, col=th.dataset.col;
+    if(tbl==="rank"){
+      if(rankSort.col===col) rankSort.dir=rankSort.dir==="asc"?"desc":"asc";
+      else { rankSort.col=col; rankSort.dir="asc"; }
+      renderRankTable();
+    } else {
+      if(detailSort.col===col) detailSort.dir=detailSort.dir==="asc"?"desc":"asc";
+      else { detailSort.col=col; detailSort.dir="asc"; }
+      renderDetailTable();
+    }
+  });
 });
 </script>
 </body>
