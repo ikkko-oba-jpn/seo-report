@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google 広告 パフォーマンス分析レポート</title>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #FFFFFF;
+  --bg2:       #F5F7FA;
+  --bg3:       #EEF1F6;
+  --border:    #E2E7EF;
+  --text:      #1A2233;
+  --text-sub:  #6B7A99;
+  --text-light:#A0AABF;
+  --accent:    #1A6EFF;
+  --accent-bg: #EBF2FF;
+  --green:     #0A8F5E;
+  --green-bg:  #E6F7F1;
+  --red:       #D93025;
+  --red-bg:    #FDE8E6;
+  --orange:    #C05500;
+  --orange-bg: #FEF0E3;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow:    0 4px 12px rgba(0,0,0,0.1);
+  --radius:    10px;
+  --radius-sm: 6px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans JP', 'BIZ UDPGothic', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  background: var(--bg2);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* HEADER */
+header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 62px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 18px; height: 18px; fill: white; }
+.logo-text { font-size: 15px; font-weight: 700; color: var(--text); }
+.logo-sep  { color: var(--text-light); margin: 0 4px; }
+.logo-sub  { font-size: 12px; color: var(--text-sub); font-weight: 400; }
+.nav-tabs  { display: flex; gap: 2px; background: var(--bg2); border-radius: var(--radius-sm); padding: 3px; }
+.nav-tab   {
+  padding: 6px 18px; font-size: 13px; font-weight: 500;
+  cursor: pointer; background: transparent; color: var(--text-sub);
+  border: none; border-radius: 4px; transition: all .18s; font-family: inherit;
+}
+.nav-tab.active { background: var(--bg); color: var(--accent); box-shadow: var(--shadow-sm); }
+
+/* MAIN */
+main { max-width: 1200px; margin: 0 auto; padding: 32px 40px 60px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* METRICS */
+.metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
+.metric {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow-sm);
+}
+.metric-label { font-size: 12px; color: var(--text-sub); font-weight: 500; margin-bottom: 8px; }
+.metric-value { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
+
+/* ALERT GRID */
+.alert-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 20px; }
+.alert-item { border-radius: var(--radius-sm); padding: 14px 16px; border-left: 4px solid; font-size: 12px; line-height: 1.6; }
+.alert-up   { background: var(--green-bg);  border-color: var(--green); }
+.alert-down { background: var(--red-bg);    border-color: var(--red); }
+.alert-warn { background: var(--orange-bg); border-color: var(--orange); }
+.alert-blue { background: var(--accent-bg); border-color: var(--accent); }
+.alert-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+.alert-up   .alert-title { color: var(--green); }
+.alert-down .alert-title { color: var(--red); }
+.alert-warn .alert-title { color: var(--orange); }
+.alert-blue .alert-title { color: var(--accent); }
+
+/* CARD */
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+.card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.card-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.card-title-bar { width: 4px; height: 16px; background: var(--accent); border-radius: 2px; }
+
+/* TABS */
+.tabs { display: flex; gap: 2px; background: var(--bg2); border-radius: var(--radius-sm); padding: 3px; }
+.tab { padding: 5px 14px; font-size: 12px; font-weight: 500; cursor: pointer; background: transparent; color: var(--text-sub); border: none; border-radius: 4px; transition: all .15s; font-family: inherit; }
+.tab.active { background: var(--bg); color: var(--accent); box-shadow: var(--shadow-sm); }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 2px solid var(--border); }
+th { padding: 9px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.04em; white-space: nowrap; text-transform: uppercase; }
+td { padding: 11px 12px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg2); }
+.td-name { font-weight: 700; }
+.td-num  { font-family: 'BIZ UDPGothic', monospace; }
+
+/* BADGE */
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.b-green  { background: var(--green-bg);  color: var(--green); }
+.b-red    { background: var(--red-bg);    color: var(--red); }
+.b-orange { background: var(--orange-bg); color: var(--orange); }
+.b-blue   { background: var(--accent-bg); color: var(--accent); }
+.b-gray   { background: var(--bg3);       color: var(--text-sub); }
+.adj-up   { background: #DBEAFE; color: #1D4ED8; }
+.adj-down { background: #FEE2E2; color: #B91C1C; }
+.adj-none { background: var(--bg3); color: var(--text-sub); }
+
+/* BAR */
+.bar-wrap { display: flex; align-items: center; gap: 8px; }
+.bar-bg { flex:1; height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; min-width:50px; }
+.bar-fill { height:100%; border-radius:3px; background: var(--accent); opacity:.65; }
+
+/* HEATMAP */
+.hm-scroll { overflow-x: auto; padding-bottom: 4px; }
+.hm-hour-lbl { font-size:11px; color:var(--text-sub); text-align:center; font-weight:500; }
+.hm-day-lbl  { font-size:12px; color:var(--text-sub); font-weight:700; text-align:right; padding-right:8px; display:flex; align-items:center; justify-content:flex-end; }
+.hm-cell {
+  height:54px; border-radius:6px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; cursor:pointer;
+  transition:transform .12s, box-shadow .12s;
+  position:relative; border:1px solid transparent;
+}
+.hm-cell:hover { transform:scale(1.07); z-index:10; box-shadow:var(--shadow); }
+.hm-cell-sub { font-size:9px; font-weight:400; opacity:.65; margin-top:1px; }
+.hm-adj {
+  position:absolute; top:3px; right:3px;
+  font-size:8px; font-weight:700; padding:1px 4px; border-radius:3px; line-height:1.4;
+}
+.hm-adj-up   { background:#DBEAFE; color:#1D4ED8; }
+.hm-adj-down { background:#FEE2E2; color:#B91C1C; }
+
+/* LEGEND */
+.legend { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:14px; font-size:11px; color:var(--text-sub); font-weight:500; }
+.lg-item { display:flex; align-items:center; gap:5px; }
+.lg-box  { width:12px; height:12px; border-radius:3px; border:1px solid rgba(0,0,0,0.08); }
+
+/* TOOLTIP */
+#tooltip {
+  position:fixed; background:var(--text); color:#fff;
+  border-radius:8px; padding:10px 14px; font-size:12px;
+  pointer-events:none; opacity:0; transition:opacity .12s;
+  z-index:9999; line-height:1.8; max-width:240px; box-shadow:var(--shadow);
+}
+#tt-title { font-weight:700; margin-bottom:2px; font-size:13px; }
+#tt-body  { opacity:.8; }
+
+/* SORT */
+select {
+  font-size:12px; padding:5px 10px;
+  border:1px solid var(--border); border-radius:var(--radius-sm);
+  color:var(--text); background:var(--bg); font-family:inherit; cursor:pointer;
+}
+
+/* FOOTER */
+footer { text-align:center; padding:24px; font-size:12px; color:var(--text-light); border-top:1px solid var(--border); margin-top:40px; }
+
+@media(max-width:768px){
+  header,main{padding-left:16px;padding-right:16px;}
+  .metrics{grid-template-columns:repeat(2,1fr);}
+  .alert-grid{grid-template-columns:1fr;}
+  .nav-tabs{gap:1px;}
+  .nav-tab{padding:6px 10px;font-size:12px;}
+}
+</style>
+</head>
+<body>
+
+<div id="tooltip"><div id="tt-title"></div><div id="tt-body"></div></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div>
+    <div><span class="logo-text">広告パフォーマンス分析</span><span class="logo-sep">/</span><span class="logo-sub">Google Ads Report</span></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('area',this)">📍 広告エリア</button>
+    <button class="nav-tab" onclick="showPage('schedule',this)">🕐 広告スケジュール</button>
+  </div>
+</header>
+
+<main>
+  <!-- ══ PAGE: AREA ══ -->
+  <div class="page active" id="page-area">
+    <div class="metrics" id="area-metrics"></div>
+    <div class="alert-grid" id="area-alerts"></div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="card-title-bar"></div>地域別パフォーマンス詳細</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;color:var(--text-sub);">並び替え：</span>
+          <select id="area-sort" onchange="renderAreaTable()">
+            <option value="cost">費用</option>
+            <option value="cv">CV数</option>
+            <option value="cvRate">CV率</option>
+            <option value="cpa">CPA（低い順）</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>地域</th><th>クリック数</th><th>費用</th>
+            <th>CV数</th><th>CV率</th><th>CPA</th>
+            <th>費用シェア</th><th>推奨アクション</th>
+          </tr></thead>
+          <tbody id="area-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PAGE: SCHEDULE ══ -->
+  <div class="page" id="page-schedule">
+    <div class="metrics" id="sched-metrics"></div>
+    <div class="alert-grid" id="sched-alerts"></div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="card-title-bar"></div>時間帯別ヒートマップ</div>
+        <div class="tabs">
+          <button class="tab active" onclick="setMode('cvRate')">CV率</button>
+          <button class="tab" onclick="setMode('cpa')">CPA</button>
+          <button class="tab" onclick="setMode('cost')">費用</button>
+        </div>
+      </div>
+      <div class="legend" id="sched-legend"></div>
+      <div class="hm-scroll"><div id="sched-heatmap"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="card-title-bar"></div>入札調整 ミスマッチ検出</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>時間帯</th><th>現在の調整</th><th>CV率</th>
+            <th>CPA</th><th>問題点</th><th>推奨アクション</th>
+          </tr></thead>
+          <tbody id="mismatch-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>Google Ads パフォーマンス分析レポート &nbsp;|&nbsp; Generated by Claude · Anthropic</footer>
+
+<script>
+/* ── DATA ── */
+const areaRaw=[
+  {name:'渋谷区',        clicks:836, imps:7244,  cost:199289, cv:105,   cvRate:12.56, cpa:1898},
+  {name:'船橋駅',        clicks:134, imps:2133,  cost:85144,  cv:48.33, cvRate:36.07, cpa:1762},
+  {name:'目黒区',        clicks:11,  imps:145,   cost:5447,   cv:8,     cvRate:72.73, cpa:681},
+  {name:'大田区',        clicks:9,   imps:104,   cost:6153,   cv:4.5,   cvRate:50.0,  cpa:1367},
+  {name:'武蔵小杉駅',    clicks:5,   imps:33,    cost:4486,   cv:1,     cvRate:20.0,  cpa:4486},
+  {name:'戸田公園駅',    clicks:13,  imps:218,   cost:3989,   cv:1,     cvRate:7.69,  cpa:3989},
+  {name:'八王子駅',      clicks:3,   imps:20,    cost:881,    cv:1,     cvRate:33.33, cpa:881},
+  {name:'和光市駅',      clicks:7,   imps:131,   cost:2292,   cv:0,     cvRate:0,     cpa:0},
+  {name:'大宮駅',        clicks:1,   imps:21,    cost:1146,   cv:0,     cvRate:0,     cpa:0},
+  {name:'柏駅',          clicks:1,   imps:13,    cost:613,    cv:0,     cvRate:0,     cpa:0},
+  {name:'西船橋駅',      clicks:1,   imps:15,    cost:623,    cv:0,     cvRate:0,     cpa:0},
+  {name:'朝霞台駅',      clicks:1,   imps:13,    cost:605,    cv:0,     cvRate:0,     cpa:0},
+  {name:'川越駅',        clicks:1,   imps:2,     cost:345,    cv:0,     cvRate:0,     cpa:0},
+  {name:'たまプラーザ駅',clicks:1,   imps:6,     cost:298,    cv:0,     cvRate:0,     cpa:0},
+  {name:'品川区',        clicks:0,   imps:74,    cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'横浜駅',        clicks:0,   imps:23,    cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'浦和駅',        clicks:0,   imps:14,    cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'松戸駅',        clicks:0,   imps:14,    cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'世田谷区',      clicks:0,   imps:3,     cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'志木駅',        clicks:0,   imps:2,     cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'海浜幕張駅',    clicks:0,   imps:0,     cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'武蔵浦和駅',    clicks:0,   imps:0,     cost:0,      cv:0,     cvRate:0,     cpa:0},
+  {name:'あざみ野駅',    clicks:0,   imps:0,     cost:0,      cv:0,     cvRate:0,     cpa:0},
+];
+
+const schedRaw=[
+  {day:'月',start:9,end:12,adj:'+20%',clicks:61,cost:18331,cv:12,cvRate:19.67,cpa:1528},
+  {day:'月',start:13,end:14,adj:'--',clicks:31,cost:10605,cv:8,cvRate:25.81,cpa:1326},
+  {day:'月',start:14,end:15,adj:'+20%',clicks:13,cost:6242,cv:2,cvRate:15.38,cpa:3121},
+  {day:'月',start:15,end:18,adj:'--',clicks:25,cost:6345,cv:4,cvRate:16.0,cpa:1586},
+  {day:'月',start:18,end:20,adj:'-50%',clicks:23,cost:3424,cv:0,cvRate:0,cpa:0},
+  {day:'火',start:9,end:11,adj:'--',clicks:32,cost:5377,cv:4,cvRate:12.5,cpa:1344},
+  {day:'火',start:11,end:13,adj:'+20%',clicks:54,cost:11594,cv:8,cvRate:14.81,cpa:1449},
+  {day:'火',start:13,end:14,adj:'--',clicks:18,cost:4498,cv:3,cvRate:16.67,cpa:1499},
+  {day:'火',start:14,end:15,adj:'+20%',clicks:13,cost:2578,cv:1,cvRate:7.69,cpa:2578},
+  {day:'火',start:15,end:20,adj:'--',clicks:58,cost:10993,cv:9.33,cvRate:16.09,cpa:1178},
+  {day:'火',start:20,end:21,adj:'--',clicks:3,cost:2562,cv:0,cvRate:0,cpa:0},
+  {day:'水',start:9,end:15,adj:'--',clicks:104,cost:40553,cv:15.5,cvRate:14.9,cpa:2616},
+  {day:'水',start:15,end:16,adj:'+30%',clicks:15,cost:3218,cv:1.5,cvRate:10.0,cpa:2145},
+  {day:'水',start:16,end:17,adj:'--',clicks:5,cost:4179,cv:2,cvRate:40.0,cpa:2090},
+  {day:'水',start:17,end:18,adj:'-50%',clicks:13,cost:1955,cv:1,cvRate:7.69,cpa:1955},
+  {day:'水',start:18,end:19,adj:'--',clicks:10,cost:3537,cv:6,cvRate:60.0,cpa:589},
+  {day:'水',start:19,end:21,adj:'-50%',clicks:11,cost:6245,cv:3,cvRate:27.27,cpa:2082},
+  {day:'木',start:9,end:11,adj:'+30%',clicks:32,cost:15697,cv:3.5,cvRate:10.94,cpa:4485},
+  {day:'木',start:11,end:12,adj:'--',clicks:25,cost:8441,cv:13,cvRate:52.0,cpa:649},
+  {day:'木',start:12,end:14,adj:'+30%',clicks:43,cost:11787,cv:8,cvRate:18.6,cpa:1473},
+  {day:'木',start:14,end:18,adj:'--',clicks:60,cost:15833,cv:13,cvRate:21.67,cpa:1218},
+  {day:'木',start:18,end:19,adj:'-50%',clicks:2,cost:1088,cv:0,cvRate:0,cpa:0},
+  {day:'金',start:9,end:12,adj:'+30%',clicks:34,cost:9224,cv:6,cvRate:17.65,cpa:1537},
+  {day:'金',start:12,end:16,adj:'--',clicks:62,cost:20771,cv:5,cvRate:8.06,cpa:4154},
+  {day:'金',start:16,end:17,adj:'-50%',clicks:4,cost:2475,cv:0,cvRate:0,cpa:0},
+  {day:'金',start:17,end:18,adj:'--',clicks:8,cost:3643,cv:1,cvRate:12.5,cpa:3643},
+  {day:'金',start:18,end:19,adj:'-50%',clicks:3,cost:562,cv:0,cvRate:0,cpa:0},
+  {day:'土',start:9,end:10,adj:'--',clicks:12,cost:6784,cv:2,cvRate:16.67,cpa:3392},
+  {day:'土',start:11,end:12,adj:'-50%',clicks:9,cost:4470,cv:3,cvRate:33.33,cpa:1490},
+  {day:'土',start:13,end:14,adj:'+30%',clicks:9,cost:3338,cv:1,cvRate:11.11,cpa:3338},
+  {day:'土',start:15,end:18,adj:'+30%',clicks:36,cost:11033,cv:1,cvRate:2.78,cpa:11033},
+  {day:'土',start:18,end:21,adj:'--',clicks:21,cost:6698,cv:4,cvRate:19.05,cpa:1674},
+  {day:'日',start:9,end:11,adj:'--',clicks:71,cost:22102,cv:19,cvRate:26.76,cpa:1163},
+  {day:'日',start:11,end:12,adj:'--',clicks:34,cost:6469,cv:4,cvRate:11.76,cpa:1617},
+  {day:'日',start:12,end:13,adj:'+30%',clicks:23,cost:3871,cv:4,cvRate:17.39,cpa:968},
+  {day:'日',start:16,end:17,adj:'--',clicks:15,cost:2943,cv:0,cvRate:0,cpa:0},
+  {day:'日',start:18,end:22,adj:'--',clicks:35,cost:12929,cv:1,cvRate:2.86,cpa:12929},
+];
+
+/* ── NAV ── */
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── AREA ── */
+const aTotCost = areaRaw.reduce((s,d)=>s+d.cost,0);
+const aTotCV   = areaRaw.reduce((s,d)=>s+d.cv,0);
+const aTotClk  = areaRaw.reduce((s,d)=>s+d.clicks,0);
+const aAvgCPA  = Math.round(aTotCost/aTotCV);
+
+document.getElementById('area-metrics').innerHTML=[
+  {l:'総費用',      v:'¥'+aTotCost.toLocaleString()},
+  {l:'総クリック数',v:aTotClk.toLocaleString()},
+  {l:'総CV数',      v:Math.round(aTotCV)},
+  {l:'平均CPA',     v:'¥'+aAvgCPA.toLocaleString()},
+].map(m=>`<div class="metric"><div class="metric-label">${m.l}</div><div class="metric-value">${m.v}</div></div>`).join('');
+
+document.getElementById('area-alerts').innerHTML=`
+  <div class="alert-item alert-up">
+    <div class="alert-title">⬆ 入札引き上げ推奨エリア（高効率）</div>
+    目黒区（CV率72.7%・CPA¥681）、大田区（CV率50%・CPA¥1,367）、八王子駅（CV率33.3%・CPA¥881）は費用対効果が高く、入札引き上げで成果拡大が見込める。
+  </div>
+  <div class="alert-item alert-down">
+    <div class="alert-title">⬇ 入札引き下げ・停止推奨エリア</div>
+    和光市駅（¥2,292消化・CV=0）、大宮駅（¥1,146消化・CV=0）など費用を消化しているが成果ゼロのエリアは入札引き下げまたは一時停止を推奨。
+  </div>
+  <div class="alert-item alert-warn">
+    <div class="alert-title">⚠ 現状維持・監視エリア</div>
+    渋谷区は費用の64%を占めつつCV率12.6%・CV数105と安定。船橋駅はCV率36%で良好。引き続き数値を監視しながら継続。
+  </div>
+  <div class="alert-item alert-blue">
+    <div class="alert-title">📌 インプレッションあり・クリックなしエリア</div>
+    品川区（74imp）・横浜駅（23imp）・浦和駅（14imp）はインプレッションはあるがクリック=0。広告文や入札価格の見直しで改善の余地あり。
+  </div>
+`;
+
+function areaRec(d){
+  if(d.cost===0&&d.cv===0)  return {l:'データなし',   c:'b-gray'};
+  if(d.cvRate>=30)          return {l:'入札引き上げ', c:'b-green'};
+  if(d.cv>=1&&d.cvRate>=10) return {l:'現状維持',     c:'b-blue'};
+  if(d.cv>=1&&d.cvRate<10)  return {l:'要観察',       c:'b-orange'};
+  if(d.cost>0&&d.cv===0)    return {l:'入札引き下げ', c:'b-red'};
+  return {l:'要観察', c:'b-orange'};
+}
+
+function renderAreaTable(){
+  const key=document.getElementById('area-sort').value;
+  const sorted=[...areaRaw].sort((a,b)=>{
+    if(key==='cpa'){
+      if(a.cpa===0&&b.cpa>0) return 1;
+      if(b.cpa===0&&a.cpa>0) return -1;
+      return a.cpa-b.cpa;
+    }
+    return b[key]-a[key];
+  });
+  document.getElementById('area-tbody').innerHTML=sorted.map(d=>{
+    const rec=areaRec(d);
+    const share=aTotCost>0?((d.cost/aTotCost)*100).toFixed(1):'0';
+    const cpaStr=d.cpa>0?'¥'+d.cpa.toLocaleString():d.cost>0?'— (CV=0)':'—';
+    return `<tr>
+      <td class="td-name">${d.name}</td>
+      <td class="td-num">${d.clicks>0?d.clicks.toLocaleString():'—'}</td>
+      <td class="td-num">${d.cost>0?'¥'+d.cost.toLocaleString():'—'}</td>
+      <td class="td-num">${d.cv>0?(d.cv%1?d.cv.toFixed(2):d.cv):'—'}</td>
+      <td class="td-num">${d.cvRate>0?d.cvRate.toFixed(2)+'%':'—'}</td>
+      <td class="td-num">${cpaStr}</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:${share}%;"></div></div>
+          <span style="font-size:11px;color:var(--text-sub);min-width:36px;">${share}%</span>
+        </div>
+      </td>
+      <td><span class="badge ${rec.c}">${rec.l}</span></td>
+    </tr>`;
+  }).join('');
+}
+renderAreaTable();
+
+/* ── SCHEDULE ── */
+const sTotCost=schedRaw.reduce((s,d)=>s+d.cost,0);
+const sTotCV  =schedRaw.reduce((s,d)=>s+d.cv,0);
+const sTotClk =schedRaw.reduce((s,d)=>s+d.clicks,0);
+const sAvgCPA =Math.round(sTotCost/sTotCV);
+
+document.getElementById('sched-metrics').innerHTML=[
+  {l:'総費用',      v:'¥'+sTotCost.toLocaleString()},
+  {l:'総クリック数',v:sTotClk.toLocaleString()},
+  {l:'総CV数',      v:Math.round(sTotCV)},
+  {l:'平均CPA',     v:'¥'+sAvgCPA.toLocaleString()},
+].map(m=>`<div class="metric"><div class="metric-label">${m.l}</div><div class="metric-value">${m.v}</div></div>`).join('');
+
+document.getElementById('sched-alerts').innerHTML=`
+  <div class="alert-item alert-up">
+    <div class="alert-title">⬆ 入札引き上げ未設定（機会損失）</div>
+    水曜18〜19時（CV率60%・CPA¥589）、木曜11〜12時（CV率52%・CPA¥649）は最高効率なのに調整なし。+30〜+50%への引き上げを強く推奨。
+  </div>
+  <div class="alert-item alert-down">
+    <div class="alert-title">⬇ 入札引き上げ中なのに低成果</div>
+    土曜15〜18時（+30%設定・CV率2.8%・CPA¥11,033）と日曜18〜22時（CPA¥12,929）は費用を大量消費。即時引き下げを推奨。
+  </div>
+  <div class="alert-item alert-up">
+    <div class="alert-title">⬆ 入札引き下げ中なのに高成果</div>
+    土曜11〜12時（-50%設定・CV率33%）、水曜19〜21時（-50%設定・CV率27%）は制限を緩和すべき機会損失エリア。
+  </div>
+  <div class="alert-item alert-warn">
+    <div class="alert-title">⚠ 入札設定と成果のミスマッチ</div>
+    木曜9〜11時（+30%設定・CPA¥4,485）、金曜12〜16時（費用¥20,771・CPA¥4,154）は費用対効果が悪く、入札水準の見直しが必要。
+  </div>
+`;
+
+const days=['月','火','水','木','金','土','日'];
+const hours=[9,10,11,12,13,14,15,16,17,18,19,20,21];
+let hmMode='cvRate';
+
+function getCells(day,h){ return schedRaw.filter(d=>d.day===day&&h>=d.start&&h<d.end); }
+
+function cellVal(cells,mode){
+  if(!cells.length) return null;
+  if(mode==='cvRate'){
+    const wk=cells.reduce((s,x)=>s+x.clicks,0);
+    return wk>0?cells.reduce((s,x)=>s+x.cvRate*x.clicks,0)/wk:null;
+  }
+  if(mode==='cpa'){const cv=cells.reduce((s,x)=>s+x.cv,0),c=cells.reduce((s,x)=>s+x.cost,0);return cv>0?c/cv:null;}
+  if(mode==='cost'){const c=cells.reduce((s,x)=>s+x.cost,0);return c>0?c:null;}
+  return null;
+}
+
+function cellColor(val,mode){
+  const empty={bg:'#F5F7FA',fg:'#C0C8D8',br:'#E2E7EF'};
+  if(val===null) return empty;
+  if(mode==='cvRate'){
+    if(val>=40) return {bg:'#0A8F5E',fg:'#fff',br:'#007A52'};
+    if(val>=20) return {bg:'#4DB896',fg:'#fff',br:'#3DA080'};
+    if(val>=10) return {bg:'#A8DFC8',fg:'#004D33',br:'#80C4A8'};
+    if(val>0)   return {bg:'#D0F0E4',fg:'#0A6644',br:'#B0DDD0'};
+    return {bg:'#FEE2E2',fg:'#B91C1C',br:'#FCA5A5'};
+  }
+  if(mode==='cpa'){
+    if(val<=1000) return {bg:'#0A8F5E',fg:'#fff',br:'#007A52'};
+    if(val<=1800) return {bg:'#4DB896',fg:'#fff',br:'#3DA080'};
+    if(val<=3000) return {bg:'#FEF3C7',fg:'#92400E',br:'#FCD34D'};
+    return {bg:'#FEE2E2',fg:'#B91C1C',br:'#FCA5A5'};
+  }
+  if(mode==='cost'){
+    if(val>=15000) return {bg:'#FEE2E2',fg:'#B91C1C',br:'#FCA5A5'};
+    if(val>=8000)  return {bg:'#FEF3C7',fg:'#92400E',br:'#FCD34D'};
+    if(val>=3000)  return {bg:'#DBEAFE',fg:'#1E40AF',br:'#93C5FD'};
+    return {bg:'#EFF6FF',fg:'#1D4ED8',br:'#BFDBFE'};
+  }
+  return empty;
+}
+
+const lgDef={
+  cvRate:[{bg:'#0A8F5E',l:'40%以上'},{bg:'#4DB896',l:'20〜40%'},{bg:'#A8DFC8',l:'10〜20%'},{bg:'#D0F0E4',l:'0〜10%'},{bg:'#FEE2E2',l:'CV=0'}],
+  cpa:   [{bg:'#0A8F5E',l:'〜¥1,000'},{bg:'#4DB896',l:'〜¥1,800'},{bg:'#FEF3C7',l:'〜¥3,000'},{bg:'#FEE2E2',l:'¥3,000超'}],
+  cost:  [{bg:'#EFF6FF',l:'〜¥3k'},{bg:'#DBEAFE',l:'〜¥8k'},{bg:'#FEF3C7',l:'〜¥15k'},{bg:'#FEE2E2',l:'¥15k超'}],
+};
+
+function renderHM(){
+  let html=`<div style="display:grid;grid-template-columns:28px repeat(${hours.length},1fr);gap:4px;min-width:720px;">`;
+  html+='<div></div>';
+  hours.forEach(h=>html+=`<div class="hm-hour-lbl">${h}:00</div>`);
+  days.forEach(day=>{
+    html+=`<div class="hm-day-lbl">${day}</div>`;
+    hours.forEach(h=>{
+      const cells=getCells(day,h);
+      const val=cellVal(cells,hmMode);
+      const c=cellColor(val,hmMode);
+      const adj=(cells.map(x=>x.adj).find(x=>x!=='--'))||null;
+      let disp='—';
+      if(val!==null){
+        if(hmMode==='cvRate') disp=val.toFixed(0)+'%';
+        else if(hmMode==='cpa') disp='¥'+(val>=1000?(val/1000).toFixed(1)+'k':Math.round(val));
+        else disp='¥'+(val>=1000?(val/1000).toFixed(0)+'k':Math.round(val));
+      }
+      const adjH=adj?`<span class="hm-adj ${adj.startsWith('+')?'hm-adj-up':'hm-adj-down'}">${adj}</span>`:'';
+      const cv=cells.reduce((s,x)=>s+x.cv,0);
+      const cost=cells.reduce((s,x)=>s+x.cost,0);
+      const clk=cells.reduce((s,x)=>s+x.clicks,0);
+      const vSafe=val===null?'null':val.toFixed(2);
+      html+=`<div class="hm-cell" style="background:${c.bg};color:${c.fg};border-color:${c.br};"
+        onmouseenter="showTT(event,'${day}曜日 ${h}:00〜',${vSafe},${cost},${cv.toFixed(2)},${clk},'${adj||''}','${hmMode}')"
+        onmouseleave="hideTT()">
+        ${adjH}<span>${disp}</span><span class="hm-cell-sub">${clk>0?clk+'clk':''}</span>
+      </div>`;
+    });
+  });
+  html+='</div>';
+  document.getElementById('sched-heatmap').innerHTML=html;
+
+  document.getElementById('sched-legend').innerHTML=
+    (lgDef[hmMode]||[]).map(l=>`<div class="lg-item"><div class="lg-box" style="background:${l.bg};"></div>${l.l}</div>`).join('')+
+    `<div class="lg-item" style="margin-left:8px;gap:4px;"><span class="badge adj-up" style="font-size:10px;padding:1px 6px;">+%</span>入札引き上げ設定中</div>
+     <div class="lg-item" style="gap:4px;"><span class="badge adj-down" style="font-size:10px;padding:1px 6px;">-50%</span>入札引き下げ設定中</div>`;
+}
+
+function setMode(m){
+  hmMode=m;
+  document.querySelectorAll('#page-schedule .tab').forEach((t,i)=>t.classList.toggle('active',['cvRate','cpa','cost'][i]===m));
+  renderHM();
+}
+renderHM();
+
+/* mismatch */
+const mismatches=[
+  {slot:'土曜日 15〜18時',adj:'+30%',cvRate:2.78, cpa:11033,issue:'入札+30%なのにCV率2.8%・CPA¥11,033と最悪クラスの費用対効果',rec:'入札引き下げ（-50%以下）',rc:'b-red'},
+  {slot:'日曜日 18〜22時',adj:'--',  cvRate:2.86, cpa:12929,issue:'CV率2.9%・CPA¥12,929と費用対効果が非常に低い',rec:'入札引き下げ（-30〜-50%）',rc:'b-red'},
+  {slot:'水曜日 18〜19時',adj:'--',  cvRate:60.0, cpa:589,  issue:'CV率60%・CPA¥589と最高効率なのに入札調整なし',rec:'入札引き上げ（+30〜+50%）',rc:'b-green'},
+  {slot:'木曜日 11〜12時',adj:'--',  cvRate:52.0, cpa:649,  issue:'CV率52%・CPA¥649と最優秀枠だが入札調整なし',rec:'入札引き上げ（+30〜+50%）',rc:'b-green'},
+  {slot:'土曜日 11〜12時',adj:'-50%',cvRate:33.33,cpa:1490, issue:'入札-50%にもかかわらずCV率33%と高パフォーマンス',rec:'入札制限を解除（0〜+20%）',rc:'b-green'},
+  {slot:'水曜日 19〜21時',adj:'-50%',cvRate:27.27,cpa:2082, issue:'入札-50%だがCV率27%と高い',rec:'入札制限を緩和（-10%程度）',rc:'b-green'},
+  {slot:'木曜日 9〜11時', adj:'+30%',cvRate:10.94,cpa:4485, issue:'入札+30%に対してCPA¥4,485と高コスト',rec:'入札を0〜+10%に引き下げ',rc:'b-orange'},
+  {slot:'金曜日 12〜16時',adj:'--',  cvRate:8.06, cpa:4154, issue:'費用¥20,771消化でCPA¥4,154と非効率',rec:'入札引き下げ（-20〜-30%）',rc:'b-red'},
+];
+
+document.getElementById('mismatch-tbody').innerHTML=mismatches.map(m=>`
+  <tr>
+    <td class="td-name" style="white-space:nowrap;">${m.slot}</td>
+    <td><span class="badge ${m.adj.startsWith('+')?'adj-up':m.adj.startsWith('-')?'adj-down':'adj-none'}">${m.adj}</span></td>
+    <td class="td-num">${m.cvRate>0?m.cvRate.toFixed(1)+'%':'—'}</td>
+    <td class="td-num">${m.cpa>0?'¥'+m.cpa.toLocaleString():'—'}</td>
+    <td style="font-size:12px;color:var(--text-sub);line-height:1.5;">${m.issue}</td>
+    <td><span class="badge ${m.rc}">${m.rec}</span></td>
+  </tr>
+`).join('');
+
+/* ── TOOLTIP ── */
+const tt=document.getElementById('tooltip');
+const ttT=document.getElementById('tt-title');
+const ttB=document.getElementById('tt-body');
+function showTT(e,title,cvRate,cost,cv,clicks,adj,mode){
+  ttT.textContent=title;
+  const lines=[];
+  if(clicks>0)lines.push('クリック: '+clicks+'回');
+  if(cost>0)  lines.push('費用: ¥'+cost.toLocaleString());
+  if(cv>0)    lines.push('CV数: '+(Number(cv)%1?Number(cv).toFixed(1):cv));
+  if(cvRate!==null&&cvRate>0)lines.push('CV率: '+Number(cvRate).toFixed(1)+'%');
+  if(cost>0&&cv>0)lines.push('CPA: ¥'+Math.round(cost/cv).toLocaleString());
+  if(adj)lines.push('入札調整: '+adj);
+  if(!lines.length)lines.push('データなし');
+  ttB.textContent=lines.join('  /  ');
+  tt.style.opacity='1';
+  moveTT(e);
+}
+document.addEventListener('mousemove',e=>{if(tt.style.opacity==='1')moveTT(e);});
+function moveTT(e){tt.style.left=(e.clientX+14)+'px';tt.style.top=(e.clientY-14)+'px';}
+function hideTT(){tt.style.opacity='0';}
+</script>
+</body>
+</html>
